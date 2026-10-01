@@ -38,3 +38,5 @@ normal (para mostrar el ahorro), categoría y productos incluidos. Marcá
    - `NEXT_PUBLIC_WHATSAPP_NUMBER`: número con código de país, sin `+` (ej. `5491112345678`)
    - `NEXT_PUBLIC_STORE_NAME` (opcional): nombre de la tienda
 3. Deploy.
+
+En Vercel, la rama de producción del proyecto es `claude/vercel-page-creation-evf213`.
