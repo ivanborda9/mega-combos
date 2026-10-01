@@ -22,13 +22,22 @@ export function ComboCard({ combo }: { combo: Combo }) {
           {combo.name}
         </Link>
         <p className="text-sm text-gray-600">{combo.tagline}</p>
-        <p className="text-xs text-gray-500">{combo.items.length} productos incluidos</p>
+        <p className="text-xs text-gray-500">{combo.items.join(" · ")}</p>
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           <div>
             {savings > 0 && <p className="text-xs text-gray-400 line-through">{formatPrice(combo.regularPrice)}</p>}
             <p className="text-xl font-extrabold">{formatPrice(combo.price)}</p>
           </div>
-          <AddToCartButton slug={combo.slug} compact />
+          {combo.sizes.length > 0 ? (
+            <Link
+              href={`/combo/${combo.slug}`}
+              className="rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600"
+            >
+              Elegir talle
+            </Link>
+          ) : (
+            <AddToCartButton slug={combo.slug} compact />
+          )}
         </div>
       </div>
     </article>

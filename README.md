@@ -1,7 +1,8 @@
 # Mega Combos
 
-Tienda online de combos (packs de productos con descuento). Las clientas eligen
-combos, los suman al carrito y envían el pedido armado por WhatsApp.
+Tienda online de combos de ropa (remeras, boxers y medias) para hombre y
+unisex. Los clientes eligen el combo y el talle, lo suman al carrito y envían
+el pedido armado por WhatsApp.
 
 No usa base de datos: los combos están en `src/data/combos.ts`, así que se
 despliega en Vercel sin configurar nada más.
@@ -14,7 +15,7 @@ despliega en Vercel sin configurar nada más.
 ## Páginas
 
 - `/` — portada, combos destacados y listado con filtro por categoría
-- `/combo/[slug]` — detalle del combo: qué incluye, precio y ahorro
+- `/combo/[slug]` — detalle del combo: qué incluye, precio, ahorro y selector de talle
 - `/carrito` — carrito con cantidades y botón "Enviar pedido por WhatsApp"
 
 ## Desarrollo
@@ -28,7 +29,8 @@ npm run dev
 ## Editar los combos
 
 Abrí `src/data/combos.ts` y cambiá la lista: nombre, emoji, precio, precio
-normal (para mostrar el ahorro), categoría y productos incluidos. Marcá
+normal (para mostrar el ahorro), categoría (Hombre o Unisex), prendas
+incluidas y talles (dejá `sizes: []` para combos de talle único). Marcá
 `featured: true` para que aparezca en "Los más pedidos".
 
 ## Desplegar en Vercel

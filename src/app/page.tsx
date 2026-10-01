@@ -8,12 +8,12 @@ export default function HomePage() {
   return (
     <div className="space-y-12">
       <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-brand-500 to-amber-400 px-6 py-12 text-white sm:px-12">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-white/80">Ahorrá comprando en combo</p>
+        <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-white/80">Remeras · Boxers · Medias</p>
         <h1 className="max-w-2xl text-4xl font-extrabold leading-tight sm:text-5xl">
-          Los productos que más usás, armados en combos a mejor precio
+          Combos de ropa para hombre y unisex, a mejor precio
         </h1>
         <p className="mt-4 max-w-xl text-lg text-white/90">
-          Elegí tus combos, sumalos al carrito y mandanos el pedido por WhatsApp. Así de simple.
+          Remeras, boxers y medias en combos que te salen más baratos que comprar cada prenda por separado. Elegí tu talle y pedí por WhatsApp.
         </p>
         <a
           href="#combos"
@@ -41,7 +41,7 @@ export default function HomePage() {
 
       <section className="grid gap-4 sm:grid-cols-3">
         {[
-          ["🛒", "Armá tu pedido", "Sumá los combos que quieras al carrito."],
+          ["👕", "Elegí tu combo y talle", "Sumá al carrito los combos que quieras."],
           ["💬", "Mandalo por WhatsApp", "Te llega el detalle listo para enviar."],
           ["🚚", "Coordinamos la entrega", "Te respondemos para acordar pago y envío."],
         ].map(([icon, title, text]) => (

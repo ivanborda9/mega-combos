@@ -5,8 +5,8 @@ import { Navbar } from "@/components/Navbar";
 import { STORE_NAME } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: { default: `${STORE_NAME} | Combos con descuento`, template: `%s | ${STORE_NAME}` },
-  description: "Combos armados con los productos que más usás, a mejor precio que comprándolos por separado.",
+  title: { default: `${STORE_NAME} | Combos de ropa`, template: `%s | ${STORE_NAME}` },
+  description: "Combos de remeras, boxers y medias para hombre y unisex, a mejor precio que comprando cada prenda por separado.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

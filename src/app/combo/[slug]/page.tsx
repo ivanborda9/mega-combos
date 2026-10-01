@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { combos, getCombo } from "@/data/combos";
 import { formatPrice, savingsPercent } from "@/lib/format";
-import { AddToCartButton } from "@/components/AddToCartButton";
+import { SizePicker } from "@/components/SizePicker";
 
 type Props = { params: { slug: string } };
 
@@ -59,7 +59,7 @@ export default function ComboPage({ params }: Props) {
               </div>
             )}
           </div>
-          <AddToCartButton slug={combo.slug} />
+          <SizePicker slug={combo.slug} sizes={combo.sizes} />
         </div>
       </div>
     </div>

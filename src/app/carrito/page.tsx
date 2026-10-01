@@ -33,7 +33,7 @@ export default function CartPage() {
   const message = [
     "¡Hola! Quiero hacer este pedido:",
     "",
-    ...items.map(({ line, combo }) => `• ${line.quantity} x ${combo.name} — ${formatPrice(combo.price * line.quantity)}`),
+    ...items.map(({ line, combo }) => `• ${line.quantity} x ${combo.name}${line.size ? ` (talle ${line.size})` : ""} — ${formatPrice(combo.price * line.quantity)}`),
     "",
     `Total: ${formatPrice(total)}`,
     ...(name.trim() ? [`Nombre: ${name.trim()}`] : []),
@@ -51,7 +51,7 @@ export default function CartPage() {
         </div>
         <ul className="space-y-3">
           {items.map(({ line, combo }) => (
-            <li key={combo.slug} className="flex items-center gap-4 rounded-2xl bg-white p-4 ring-1 ring-black/5">
+            <li key={`${combo.slug}-${line.size}`} className="flex items-center gap-4 rounded-2xl bg-white p-4 ring-1 ring-black/5">
               <span className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-brand-100 text-3xl" aria-hidden>
                 {combo.emoji}
               </span>
@@ -59,13 +59,16 @@ export default function CartPage() {
                 <Link href={`/combo/${combo.slug}`} className="font-semibold hover:underline">
                   {combo.name}
                 </Link>
-                <p className="text-sm text-gray-500">{formatPrice(combo.price)} c/u</p>
+                <p className="text-sm text-gray-500">
+                  {line.size && <span className="font-medium text-gray-700">Talle {line.size} · </span>}
+                  {formatPrice(combo.price)} c/u
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   aria-label="Restar uno"
-                  onClick={() => setQuantity(combo.slug, line.quantity - 1)}
+                  onClick={() => setQuantity(combo.slug, line.size, line.quantity - 1)}
                   className="h-8 w-8 rounded-full ring-1 ring-black/10 hover:bg-gray-100"
                 >
                   −
@@ -74,7 +77,7 @@ export default function CartPage() {
                 <button
                   type="button"
                   aria-label="Sumar uno"
-                  onClick={() => setQuantity(combo.slug, line.quantity + 1)}
+                  onClick={() => setQuantity(combo.slug, line.size, line.quantity + 1)}
                   className="h-8 w-8 rounded-full ring-1 ring-black/10 hover:bg-gray-100"
                 >
                   +
@@ -82,7 +85,7 @@ export default function CartPage() {
               </div>
               <button
                 type="button"
-                onClick={() => remove(combo.slug)}
+                onClick={() => remove(combo.slug, line.size)}
                 className="hidden text-sm text-gray-400 hover:text-red-600 sm:block"
               >
                 Quitar
