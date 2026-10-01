@@ -1,35 +1,26 @@
 import type { Metadata } from "next";
-import { Playfair_Display } from "next/font/google";
 import "./globals.css";
-import { getSiteSettings } from "@/lib/settings";
-import { generateBrandShades, isValidHexColor, BRAND_SHADE_KEYS } from "@/lib/colors";
+import { CartProvider } from "@/components/CartProvider";
+import { Navbar } from "@/components/Navbar";
+import { STORE_NAME } from "@/lib/config";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["700", "900"],
-  style: ["italic", "normal"],
-  variable: "--font-display",
-});
+export const metadata: Metadata = {
+  title: { default: `${STORE_NAME} | Combos con descuento`, template: `%s | ${STORE_NAME}` },
+  description: "Combos armados con los productos que más usás, a mejor precio que comprándolos por separado.",
+};
 
-export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
-  return {
-    title: settings.storeName,
-    description: "Catálogo de ropa por mayor y menor con red de revendedoras.",
-  };
-}
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSiteSettings();
-  const primaryColor = isValidHexColor(settings.primaryColor) ? settings.primaryColor : "#db2777";
-  const shades = generateBrandShades(primaryColor);
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <head>
-        <style>{`:root{${BRAND_SHADE_KEYS.map((key) => `--brand-${key}:${shades[key]};`).join("")}}`}</style>
-      </head>
-      <body className={`${playfair.variable} flex min-h-screen flex-col`}>{children}</body>
+      <body className="flex min-h-screen flex-col">
+        <CartProvider>
+          <Navbar />
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
+          <footer className="border-t border-black/5 py-6 text-center text-sm text-gray-500">
+            © {new Date().getFullYear()} {STORE_NAME} · Pedidos por WhatsApp
+          </footer>
+        </CartProvider>
+      </body>
     </html>
   );
 }
