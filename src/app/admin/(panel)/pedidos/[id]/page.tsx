@@ -1,0 +1,112 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { formatDateTime, formatPrice } from "@/lib/format";
+import { ONE_SIZE } from "@/lib/combos";
+import { ORDER_STATUSES, STATUS_LABELS } from "@/lib/orders";
+import { Card, Notice, PageHeader } from "@/components/admin/ui";
+import { StatusBadge } from "@/components/admin/StatusBadge";
+import { updateOrderStatus } from "../actions";
+
+const waLink = (phone: string) => {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 8 ? `https://wa.me/${digits}` : null;
+};
+
+export default async function OrderDetailPage({ params, searchParams }: { params: { id: string }; searchParams: { error?: string } }) {
+  const order = await prisma.order.findUnique({ where: { id: params.id }, include: { items: true } });
+  if (!order) notFound();
+  const wa = order.customerPhone ? waLink(order.customerPhone) : null;
+
+  return (
+    <div className="max-w-3xl">
+      <Link href="/admin/pedidos" className="text-sm text-gray-500 hover:text-gray-900">
+        ← Pedidos
+      </Link>
+      <PageHeader title={`Pedido #${order.number}`}>
+        <StatusBadge status={order.status} />
+      </PageHeader>
+      {searchParams.error && <Notice kind="error">{searchParams.error}</Notice>}
+
+      <div className="grid gap-6 md:grid-cols-[1fr_260px]">
+        <Card title="Combos">
+          <ul className="divide-y text-sm">
+            {order.items.map((item) => (
+              <li key={item.id} className="flex justify-between gap-4 py-2">
+                <span>
+                  {item.quantity} x {item.comboName}
+                  {item.size !== ONE_SIZE && <span className="text-gray-500"> · talle {item.size}</span>}
+                </span>
+                <span className="font-medium tabular-nums">{formatPrice(item.price * item.quantity)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-3 flex justify-between border-t pt-3 text-lg font-extrabold">
+            <span>Total</span>
+            <span>{formatPrice(order.total)}</span>
+          </div>
+        </Card>
+
+        <div className="space-y-6">
+          <Card title="Cliente">
+            <dl className="space-y-2 text-sm">
+              <div>
+                <dt className="text-gray-500">Nombre</dt>
+                <dd className="font-medium">{order.customerName}</dd>
+              </div>
+              {order.customerPhone && (
+                <div>
+                  <dt className="text-gray-500">Teléfono</dt>
+                  <dd className="font-medium">
+                    {order.customerPhone}
+                    {wa && (
+                      <a href={wa} target="_blank" rel="noopener noreferrer" className="ml-2 text-green-700 hover:underline">
+                        WhatsApp ↗
+                      </a>
+                    )}
+                  </dd>
+                </div>
+              )}
+              {order.customerAddress && (
+                <div>
+                  <dt className="text-gray-500">Dirección / zona</dt>
+                  <dd className="font-medium">{order.customerAddress}</dd>
+                </div>
+              )}
+              {order.notes && (
+                <div>
+                  <dt className="text-gray-500">Nota</dt>
+                  <dd className="whitespace-pre-line">{order.notes}</dd>
+                </div>
+              )}
+              <div>
+                <dt className="text-gray-500">Fecha</dt>
+                <dd>{formatDateTime(order.createdAt)}</dd>
+              </div>
+            </dl>
+          </Card>
+
+          <Card title="Cambiar estado">
+            <div className="grid grid-cols-2 gap-2">
+              {ORDER_STATUSES.map((s) => (
+                <form key={s} action={updateOrderStatus}>
+                  <input type="hidden" name="id" value={order.id} />
+                  <input type="hidden" name="status" value={s} />
+                  <button
+                    disabled={order.status === s}
+                    className={`w-full rounded-lg px-3 py-2 text-sm font-semibold ${
+                      order.status === s ? "bg-gray-900 text-white" : "bg-white ring-1 ring-black/15 hover:bg-gray-50"
+                    }`}
+                  >
+                    {STATUS_LABELS[s]}
+                  </button>
+                </form>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-gray-500">Al cancelar, el stock de estos combos vuelve a estar disponible.</p>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}

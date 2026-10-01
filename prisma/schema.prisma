@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Un combo a la venta (ej. "3 remeras + 3 boxers + 3 medias").
+model Combo {
+  id           String      @id @default(cuid())
+  slug         String      @unique
+  name         String
+  tagline      String      @default("")
+  description  String      @default("")
+  category     String      @default("Hombre")
+  /// Prendas incluidas, una por renglón en el admin
+  items        String[]
+  price        Int
+  /// Precio de las prendas por separado, para mostrar el ahorro
+  regularPrice Int?
+  imageUrl     String?
+  emoji        String      @default("👕")
+  featured     Boolean     @default(false)
+  active       Boolean     @default(true)
+  position     Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  sizes      ComboSize[]
+  orderItems OrderItem[]
+}
+
+/// Stock de un combo por talle. Los combos de talle único tienen una sola fila con size = "Único".
+model ComboSize {
+  id       String @id @default(cuid())
+  comboId  String
+  combo    Combo  @relation(fields: [comboId], references: [id], onDelete: Cascade)
+  size     String
+  stock    Int    @default(0)
+  position Int    @default(0)
+
+  @@unique([comboId, size])
+}
+
+/// Imagen del carrusel de la portada.
+model Banner {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  title     String?
+  subtitle  String?
+  linkUrl   String?
+  position  Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  /// Número corto para hablar del pedido por WhatsApp
+  number          Int         @unique @default(autoincrement())
+  customerName    String
+  customerPhone   String      @default("")
+  customerAddress String      @default("")
+  notes           String      @default("")
+  total           Int
+  /// PENDIENTE | CONFIRMADO | ENTREGADO | CANCELADO
+  status          String      @default("PENDIENTE")
+  createdAt       DateTime    @default(now())
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  comboId   String?
+  combo     Combo?  @relation(fields: [comboId], references: [id], onDelete: SetNull)
+  comboName String
+  size      String
+  price     Int
+  quantity  Int
+}
