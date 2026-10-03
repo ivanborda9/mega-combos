@@ -2,8 +2,21 @@
 export const SESSION_COOKIE_NAME = "admin_session";
 export const SESSION_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 días
 
+/**
+ * Lee una variable de entorno sin espacios ni comillas alrededor
+ * (es fácil pegar `"admin"` con comillas al cargarla en Vercel).
+ */
+function env(name: string): string {
+  return (process.env[name] ?? "").trim().replace(/^(["'])(.*)\1$/, "$2").trim();
+}
+
+/** Variables del admin que faltan configurar (solo los nombres, nunca los valores). */
+export function missingAdminEnv(): string[] {
+  return ["ADMIN_USERNAME", "ADMIN_PASSWORD", "ADMIN_SESSION_SECRET"].filter((name) => !env(name));
+}
+
 function getSecret(): string {
-  const secret = process.env.ADMIN_SESSION_SECRET;
+  const secret = env("ADMIN_SESSION_SECRET");
   if (!secret) throw new Error("Falta configurar ADMIN_SESSION_SECRET en las variables de entorno.");
   return secret;
 }
@@ -44,7 +57,8 @@ export async function verifySessionToken(token: string | undefined): Promise<boo
 }
 
 export function checkAdminCredentials(username: string, password: string): boolean {
-  const u = process.env.ADMIN_USERNAME ?? "";
-  const p = process.env.ADMIN_PASSWORD ?? "";
-  return Boolean(u && p && timingSafeEqual(username, u) && timingSafeEqual(password, p));
+  const u = env("ADMIN_USERNAME").toLowerCase();
+  const p = env("ADMIN_PASSWORD");
+  // El usuario no distingue mayúsculas (el celular suele poner la primera en mayúscula); la contraseña sí.
+  return Boolean(u && p && timingSafeEqual(username.trim().toLowerCase(), u) && timingSafeEqual(password.trim(), p));
 }
