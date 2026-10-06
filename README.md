@@ -38,6 +38,11 @@ entrega.
 - **Carrusel**: imágenes de la portada con título, texto y link; ordenar,
   ocultar o eliminar
 
+## Segundo admin
+
+Con `ADMIN2_USERNAME` y `ADMIN2_PASSWORD` otra persona entra al admin con sus
+propios datos y el mismo acceso completo que el admin principal.
+
 ## Sub-admin de despacho
 
 Con `EMPLOYEE_USERNAME` y `EMPLOYEE_PASSWORD` se habilita un segundo usuario
@@ -51,7 +56,8 @@ artículos, stock o carrusel, y no puede cancelar pedidos.
 1. **Base de datos**: Storage → Create Database → **Neon** → conectarla al proyecto.
 2. **Environment Variables**: `ADMIN_USERNAME`, `ADMIN_PASSWORD`,
    `ADMIN_SESSION_SECRET`, `NEXT_PUBLIC_WHATSAPP_NUMBER` y, si querés,
-   `NEXT_PUBLIC_STORE_NAME`, `EMPLOYEE_USERNAME` y `EMPLOYEE_PASSWORD`
+   `NEXT_PUBLIC_STORE_NAME`, `ADMIN2_USERNAME` y `ADMIN2_PASSWORD`,
+   `EMPLOYEE_USERNAME` y `EMPLOYEE_PASSWORD`
    (ver `.env.example`).
 3. Redeploy. El build crea las tablas y carga 8 artículos de ejemplo para
    mujer con 10 unidades por talle (si había artículos de ejemplo de una

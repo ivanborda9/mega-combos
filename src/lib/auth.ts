@@ -72,9 +72,13 @@ function matches(username: string, password: string, userVar: string, passVar: s
   return Boolean(u && p && timingSafeEqual(username.trim().toLowerCase(), u) && timingSafeEqual(password.trim(), p));
 }
 
-/** Devuelve el rol si el usuario y la contraseña coinciden con el admin o con el empleado (opcional). */
+/**
+ * Devuelve el rol si el usuario y la contraseña coinciden con el admin, el segundo admin
+ * (opcional, mismo acceso completo) o el empleado de despacho (opcional).
+ */
 export function checkAdminCredentials(username: string, password: string): AdminRole | null {
   if (matches(username, password, "ADMIN_USERNAME", "ADMIN_PASSWORD")) return "owner";
+  if (matches(username, password, "ADMIN2_USERNAME", "ADMIN2_PASSWORD")) return "owner";
   if (matches(username, password, "EMPLOYEE_USERNAME", "EMPLOYEE_PASSWORD")) return "empleado";
   return null;
 }
