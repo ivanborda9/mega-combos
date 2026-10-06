@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { isBlobConfigured } from "@/lib/blob";
 import { Card, Notice, PageHeader, inputClass, secondaryButtonClass } from "@/components/admin/ui";
-import { ImageField } from "@/components/admin/ImageField";
+import { SingleImageInput } from "@/components/admin/SingleImageInput";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { ConfirmButton } from "@/components/admin/ConfirmButton";
 import { createBanner, deleteBanner, moveBanner, updateBanner } from "./actions";
@@ -17,10 +16,10 @@ function BannerFields({ title, subtitle, linkUrl, active = true }: BannerFieldsP
       </label>
       <label className="block text-sm font-medium">
         Texto <span className="font-normal text-gray-500">(opcional)</span>
-        <input name="subtitle" defaultValue={subtitle ?? ""} placeholder="3 remeras + 3 boxers a precio especial" className={inputClass} />
+        <input name="subtitle" defaultValue={subtitle ?? ""} placeholder="3 remeras + 3 bombachas a precio especial" className={inputClass} />
       </label>
       <label className="block text-sm font-medium">
-        Link al tocar <span className="font-normal text-gray-500">(opcional, ej. /combo/mega-combo-hombre)</span>
+        Link al tocar <span className="font-normal text-gray-500">(opcional, ej. /combo/mega-combo-mujer)</span>
         <input name="linkUrl" defaultValue={linkUrl ?? ""} className={inputClass} />
       </label>
       <label className="flex items-center gap-2 text-sm">
@@ -32,7 +31,6 @@ function BannerFields({ title, subtitle, linkUrl, active = true }: BannerFieldsP
 
 export default async function CarouselPage({ searchParams }: { searchParams: { ok?: string; error?: string } }) {
   const banners = await prisma.banner.findMany({ orderBy: [{ position: "asc" }, { createdAt: "asc" }] });
-  const blobReady = isBlobConfigured();
 
   return (
     <div className="max-w-4xl">
@@ -80,7 +78,7 @@ export default async function CarouselPage({ searchParams }: { searchParams: { o
                 <details className="text-sm">
                   <summary className="cursor-pointer font-medium text-gray-700">Cambiar imagen</summary>
                   <div className="mt-3">
-                    <ImageField blobReady={blobReady} allowRemove={false} />
+                    <SingleImageInput />
                   </div>
                 </details>
                 <SubmitButton>Guardar</SubmitButton>
@@ -91,7 +89,7 @@ export default async function CarouselPage({ searchParams }: { searchParams: { o
 
         <Card title="Agregar imagen">
           <form action={createBanner} className="grid gap-5 md:grid-cols-2">
-            <ImageField blobReady={blobReady} allowRemove={false} />
+            <SingleImageInput />
             <div className="space-y-4">
               <BannerFields />
               <SubmitButton pendingText="Subiendo…">Agregar al carrusel</SubmitButton>

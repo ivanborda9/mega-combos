@@ -1,7 +1,7 @@
 # Mega Combos
 
-Tienda online de combos de ropa (remeras, boxers y medias) para hombre y
-unisex. Los clientes eligen el combo y el talle, confirman el pedido (queda
+Tienda online de combos de ropa para mujer (remeras, bombachas, tops y
+medias). Los clientes eligen el combo y el talle, confirman el pedido (queda
 guardado y descuenta stock) y lo envían por WhatsApp para coordinar pago y
 entrega.
 
@@ -9,11 +9,11 @@ entrega.
 
 - Next.js 14 (App Router) + TypeScript + Tailwind CSS
 - Prisma + PostgreSQL
-- Vercel Blob para las fotos (opcional)
+- Las fotos se suben desde el admin (se achican en el navegador) y se guardan en la misma base
 
 ## Tienda
 
-- `/` — carrusel de imágenes, combos destacados y listado con filtro Hombre / Unisex
+- `/` — carrusel de imágenes, combos destacados y listado con filtro por categoría
 - `/combo/[slug]` — qué incluye, precio, ahorro y selector de talle (los talles sin stock no se pueden elegir)
 - `/carrito` — carrito, datos del cliente y "Confirmar pedido"
 - `/pedido/[id]` — pedido registrado con el botón para enviarlo por WhatsApp
@@ -26,7 +26,8 @@ entrega.
 - **Pedidos**: listado con filtro por estado y búsqueda; detalle con los datos
   del cliente y cambio de estado (Pendiente, Confirmado, Entregado, Cancelado).
   Cancelar devuelve el stock
-- **Combos**: crear, editar, ocultar o eliminar combos; foto, precio, precio
+- **Combos**: crear, editar, ocultar o eliminar combos; varias fotos (se suben
+  desde la galería del celular o la compu), precio, precio
   normal, prendas incluidas, talles y stock por talle
 - **Stock**: todos los combos y talles en una sola pantalla para corregir o
   cargar mercadería
@@ -36,12 +37,12 @@ entrega.
 ## Configuración en Vercel
 
 1. **Base de datos**: Storage → Create Database → **Neon** → conectarla al proyecto.
-2. **Fotos** (opcional): Storage → Create → **Blob** → conectarlo al proyecto.
-3. **Environment Variables**: `ADMIN_USERNAME`, `ADMIN_PASSWORD`,
+2. **Environment Variables**: `ADMIN_USERNAME`, `ADMIN_PASSWORD`,
    `ADMIN_SESSION_SECRET`, `NEXT_PUBLIC_WHATSAPP_NUMBER` y, si querés,
    `NEXT_PUBLIC_STORE_NAME` (ver `.env.example`).
-4. Redeploy. El build crea las tablas y, si la base está vacía, carga 8
-   combos de ejemplo con 10 unidades por talle.
+3. Redeploy. El build crea las tablas y carga 8 combos de ejemplo para
+   mujer con 10 unidades por talle (si había combos de ejemplo de una
+   versión anterior, los reemplaza; los creados desde el admin no se tocan).
 
 En Vercel, la rama de producción del proyecto es `claude/vercel-page-creation-evf213`.
 

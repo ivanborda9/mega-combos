@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getComboBySlug } from "@/lib/combos";
+import { comboPhotoUrls, getComboBySlug } from "@/lib/combos";
 import { formatPrice, savingsPercent } from "@/lib/format";
 import { SizePicker } from "@/components/SizePicker";
-import { ComboVisual } from "@/components/ComboVisual";
+import { ComboGallery } from "@/components/ComboGallery";
 
 export const dynamic = "force-dynamic";
 
@@ -27,9 +27,7 @@ export default async function ComboPage({ params }: Props) {
         ← Volver a los combos
       </Link>
       <div className="mt-4 grid gap-8 md:grid-cols-2">
-        <div className="aspect-square overflow-hidden rounded-3xl">
-          <ComboVisual imageUrl={combo.imageUrl} emoji={combo.emoji} name={combo.name} emojiClassName="text-9xl" />
-        </div>
+        <ComboGallery photos={comboPhotoUrls(combo)} emoji={combo.emoji} name={combo.name} />
         <div className="flex flex-col gap-4">
           <p className="text-sm font-semibold uppercase tracking-wide text-brand-700">{combo.category}</p>
           <h1 className="text-3xl font-extrabold sm:text-4xl">{combo.name}</h1>

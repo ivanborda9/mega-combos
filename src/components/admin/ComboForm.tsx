@@ -1,14 +1,13 @@
-import type { Combo, ComboSize } from "@prisma/client";
-import { CATEGORIES, DEFAULT_SIZES } from "@/lib/combos";
-import { isBlobConfigured } from "@/lib/blob";
+import type { Combo, ComboPhoto, ComboSize } from "@prisma/client";
+import { CATEGORIES, DEFAULT_SIZES, comboPhotoUrls } from "@/lib/combos";
 import { Card, inputClass } from "./ui";
-import { ImageField } from "./ImageField";
+import { PhotosEditor } from "./PhotosEditor";
 import { SizesEditor } from "./SizesEditor";
 import { SubmitButton } from "./SubmitButton";
 
 type Props = {
   action: (formData: FormData) => Promise<void>;
-  combo?: Combo & { sizes: ComboSize[] };
+  combo?: Combo & { sizes: ComboSize[]; photos: ComboPhoto[] };
 };
 
 export function ComboForm({ action, combo }: Props) {
@@ -20,11 +19,11 @@ export function ComboForm({ action, combo }: Props) {
           <div className="space-y-4">
             <label className="block text-sm font-medium">
               Nombre *
-              <input name="name" required defaultValue={combo?.name} placeholder="Combo Básico Hombre" className={inputClass} />
+              <input name="name" required defaultValue={combo?.name} placeholder="Combo Básico Mujer" className={inputClass} />
             </label>
             <label className="block text-sm font-medium">
               Frase corta
-              <input name="tagline" defaultValue={combo?.tagline} placeholder="Remeras, boxers y medias para toda la semana" className={inputClass} />
+              <input name="tagline" defaultValue={combo?.tagline} placeholder="Remeras, bombachas y medias para toda la semana" className={inputClass} />
             </label>
             <label className="block text-sm font-medium">
               Qué incluye <span className="font-normal text-gray-500">(una prenda por renglón)</span>
@@ -32,7 +31,7 @@ export function ComboForm({ action, combo }: Props) {
                 name="items"
                 rows={4}
                 defaultValue={combo?.items.join("\n")}
-                placeholder={"3 remeras lisas de algodón\n3 boxers\n3 pares de medias"}
+                placeholder={"3 remeras lisas de algodón\n3 bombachas\n3 pares de medias"}
                 className={inputClass}
               />
             </label>
@@ -78,8 +77,8 @@ export function ComboForm({ action, combo }: Props) {
       </div>
 
       <div className="space-y-6">
-        <Card title="Foto">
-          <ImageField current={combo?.imageUrl} blobReady={isBlobConfigured()} />
+        <Card title="Fotos">
+          <PhotosEditor initial={combo ? comboPhotoUrls(combo) : []} />
         </Card>
         <Card title="Publicación">
           <div className="space-y-3 text-sm">

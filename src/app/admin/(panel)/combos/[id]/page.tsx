@@ -9,7 +9,7 @@ import { deleteCombo, updateCombo } from "../actions";
 export default async function EditComboPage({ params, searchParams }: { params: { id: string }; searchParams: { error?: string; ok?: string } }) {
   const combo = await prisma.combo.findUnique({
     where: { id: params.id },
-    include: { sizes: { orderBy: { position: "asc" } } },
+    include: { sizes: { orderBy: { position: "asc" } }, photos: { orderBy: { position: "asc" } } },
   });
   if (!combo) notFound();
 

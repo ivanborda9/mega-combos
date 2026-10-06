@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 
-export const CATEGORIES = ["Hombre", "Unisex"] as const;
+export const CATEGORIES = ["Mujer", "Hombre", "Unisex"] as const;
 export const ONE_SIZE = "Único";
 export const DEFAULT_SIZES = ["S", "M", "L", "XL", "XXL"];
 
-const withSizes = { sizes: { orderBy: { position: "asc" as const } } };
+const withSizes = { sizes: { orderBy: { position: "asc" as const } }, photos: { orderBy: { position: "asc" as const } } };
 
 export type ComboWithSizes = NonNullable<Awaited<ReturnType<typeof getComboBySlug>>>;
 
@@ -18,13 +18,22 @@ export type PublicCombo = {
   items: string[];
   price: number;
   regularPrice: number | null;
+  /** Foto principal (la primera de `photos`) */
   imageUrl: string | null;
+  photos: string[];
   emoji: string;
   featured: boolean;
   sizes: { size: string; stock: number }[];
 };
 
+/** Fotos del combo en orden; si es un combo viejo con una sola foto, esa. */
+export function comboPhotoUrls(c: { imageUrl: string | null; photos: { url: string }[] }): string[] {
+  if (c.photos.length > 0) return c.photos.map((p) => p.url);
+  return c.imageUrl ? [c.imageUrl] : [];
+}
+
 export function toPublicCombo(c: ComboWithSizes): PublicCombo {
+  const photos = comboPhotoUrls(c);
   return {
     slug: c.slug,
     name: c.name,
@@ -34,7 +43,8 @@ export function toPublicCombo(c: ComboWithSizes): PublicCombo {
     items: c.items,
     price: c.price,
     regularPrice: c.regularPrice,
-    imageUrl: c.imageUrl,
+    imageUrl: photos[0] ?? null,
+    photos,
     emoji: c.emoji,
     featured: c.featured,
     sizes: c.sizes.map((s) => ({ size: s.size, stock: s.stock })),

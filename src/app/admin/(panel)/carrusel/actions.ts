@@ -4,10 +4,18 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/adminSession";
-import { deleteImageFile, imageFromForm } from "@/lib/blob";
+import { deleteStoredImages, isValidImageUrl } from "@/lib/images";
 import { UserError, errorMessage } from "@/lib/errors";
 
 const text = (formData: FormData, key: string, max: number) => String(formData.get(key) ?? "").trim().slice(0, max) || null;
+
+/** URL de la imagen elegida en el formulario (subida o pegada), o undefined si no cambió */
+function imageFromForm(formData: FormData) {
+  const url = String(formData.get("imageUrl") ?? "").trim();
+  if (!url) return undefined;
+  if (!isValidImageUrl(url)) throw new UserError('El link de la imagen tiene que empezar con "https://".');
+  return url;
+}
 
 function bannerFields(formData: FormData) {
   const linkUrl = text(formData, "linkUrl", 300);
@@ -30,8 +38,8 @@ function done(query = "") {
 export async function createBanner(formData: FormData) {
   await requireAdmin();
   try {
-    const fields = bannerFields(formData); // validar antes de subir la foto
-    const imageUrl = await imageFromForm(formData, "carrusel");
+    const fields = bannerFields(formData);
+    const imageUrl = imageFromForm(formData);
     if (!imageUrl) throw new UserError("Elegí una imagen.");
     const last = await prisma.banner.findFirst({ orderBy: { position: "desc" } });
     await prisma.banner.create({ data: { ...fields, imageUrl, position: (last?.position ?? -1) + 1 } });
@@ -47,9 +55,9 @@ export async function updateBanner(formData: FormData) {
   try {
     const fields = bannerFields(formData);
     const current = await prisma.banner.findUniqueOrThrow({ where: { id } });
-    const imageUrl = (await imageFromForm(formData, "carrusel")) ?? current.imageUrl;
+    const imageUrl = imageFromForm(formData) ?? current.imageUrl;
     await prisma.banner.update({ where: { id }, data: { ...fields, imageUrl } });
-    if (imageUrl !== current.imageUrl) await deleteImageFile(current.imageUrl);
+    if (imageUrl !== current.imageUrl) await deleteStoredImages([current.imageUrl]);
   } catch (e) {
     done(`?error=${encodeURIComponent(errorMessage(e))}`);
   }
@@ -61,7 +69,7 @@ export async function deleteBanner(formData: FormData) {
   const banner = await prisma.banner.findUnique({ where: { id: String(formData.get("id")) } });
   if (banner) {
     await prisma.banner.delete({ where: { id: banner.id } });
-    await deleteImageFile(banner.imageUrl);
+    await deleteStoredImages([banner.imageUrl]);
   }
   done();
 }

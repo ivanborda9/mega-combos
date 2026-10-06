@@ -7,19 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// Un combo a la venta (ej. "3 remeras + 3 boxers + 3 medias").
+/// Un combo a la venta (ej. "3 remeras + 3 bombachas + 3 medias").
 model Combo {
   id           String      @id @default(cuid())
   slug         String      @unique
   name         String
   tagline      String      @default("")
   description  String      @default("")
-  category     String      @default("Hombre")
+  category     String      @default("Mujer")
   /// Prendas incluidas, una por renglón en el admin
   items        String[]
   price        Int
   /// Precio de las prendas por separado, para mostrar el ahorro
   regularPrice Int?
+  /// Foto vieja de antes de que existieran varias fotos por combo; ahora se usan `photos`
   imageUrl     String?
   emoji        String      @default("👕")
   featured     Boolean     @default(false)
@@ -29,7 +30,31 @@ model Combo {
   updatedAt    DateTime    @updatedAt
 
   sizes      ComboSize[]
+  photos     ComboPhoto[]
   orderItems OrderItem[]
+}
+
+/// Fotos de un combo, en orden. La primera es la principal.
+model ComboPhoto {
+  id       String @id @default(cuid())
+  comboId  String
+  combo    Combo  @relation(fields: [comboId], references: [id], onDelete: Cascade)
+  url      String
+  position Int    @default(0)
+}
+
+/// Imagen subida desde el admin, guardada en la base y servida en /img/[id].
+model StoredImage {
+  id        String   @id @default(cuid())
+  data      Bytes
+  mimeType  String
+  createdAt DateTime @default(now())
+}
+
+/// Datos internos de la app (ej. qué versión del catálogo de ejemplo se cargó).
+model AppMeta {
+  key   String @id
+  value String
 }
 
 /// Stock de un combo por talle. Los combos de talle único tienen una sola fila con size = "Único".

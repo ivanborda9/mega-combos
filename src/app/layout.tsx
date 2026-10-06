@@ -4,7 +4,7 @@ import { STORE_NAME } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: { default: `${STORE_NAME} | Combos de ropa`, template: `%s | ${STORE_NAME}` },
-  description: "Combos de remeras, boxers y medias para hombre y unisex, a mejor precio que comprando cada prenda por separado.",
+  description: "Combos de remeras, bombachas, tops y medias para mujer, a mejor precio que comprando cada prenda por separado.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

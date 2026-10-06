@@ -19,12 +19,12 @@ export default async function HomePage() {
         <BannerCarousel banners={banners} />
       ) : (
         <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-brand-500 to-amber-400 px-6 py-12 text-white sm:px-12">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-white/80">Remeras · Boxers · Medias</p>
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-white/80">Remeras · Lencería · Medias</p>
           <h1 className="max-w-2xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            Combos de ropa para hombre y unisex, a mejor precio
+            Combos de ropa para mujer, a mejor precio
           </h1>
           <p className="mt-4 max-w-xl text-lg text-white/90">
-            Remeras, boxers y medias en combos que te salen más baratos que comprar cada prenda por separado. Elegí tu
+            Remeras, bombachas, tops y medias en combos que te salen más baratos que comprar cada prenda por separado. Elegí tu
             talle y pedí por WhatsApp.
           </p>
           <a

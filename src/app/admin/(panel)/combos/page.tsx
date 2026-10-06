@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
-import { isOneSize, totalStock } from "@/lib/combos";
+import { comboPhotoUrls, isOneSize, totalStock } from "@/lib/combos";
 import { Card, Notice, PageHeader, buttonClass } from "@/components/admin/ui";
 import { ComboVisual } from "@/components/ComboVisual";
 import { toggleComboActive } from "./actions";
 
 export default async function CombosAdminPage({ searchParams }: { searchParams: { ok?: string } }) {
   const combos = await prisma.combo.findMany({
-    include: { sizes: { orderBy: { position: "asc" } } },
+    include: { sizes: { orderBy: { position: "asc" } }, photos: { orderBy: { position: "asc" } } },
     orderBy: [{ position: "asc" }, { createdAt: "asc" }],
   });
 
@@ -44,7 +44,7 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                     <td className="px-4 py-3">
                       <Link href={`/admin/combos/${c.id}`} className="flex items-center gap-3 font-medium hover:underline">
                         <span className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
-                          <ComboVisual imageUrl={c.imageUrl} emoji={c.emoji} name={c.name} emojiClassName="text-xl" />
+                          <ComboVisual imageUrl={comboPhotoUrls(c)[0] ?? null} emoji={c.emoji} name={c.name} emojiClassName="text-xl" />
                         </span>
                         <span>
                           {c.name}

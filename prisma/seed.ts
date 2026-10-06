@@ -1,35 +1,70 @@
-// Carga los combos de ejemplo la primera vez (si la base no tiene ninguno).
+// Corre en cada build. Carga el catálogo de ejemplo y, cuando cambia de versión,
+// reemplaza los combos de ejemplo anteriores (los combos creados desde el admin no se tocan).
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+const CATALOG_VERSION = 2; // 1: combos de hombre · 2: combos de mujer
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
+/** Combos de ejemplo de versiones anteriores, para poder sacarlos al reemplazar el catálogo. */
+const OLD_EXAMPLE_SLUGS = [
+  "combo-basico-hombre",
+  "mega-combo-hombre",
+  "combo-boxers-medias",
+  "combo-semana-hombre",
+  "combo-remeras-hombre",
+  "combo-remeras-unisex",
+  "combo-unisex-completo",
+  "combo-medias-unisex",
+];
+
 const combos = [
-  { slug: "combo-basico-hombre", name: "Combo Básico Hombre", tagline: "Remeras, boxers y medias para toda la semana", emoji: "👕", price: 49900, regularPrice: 62500, category: "Hombre", items: ["3 remeras lisas de algodón", "3 boxers", "3 pares de medias"], sizes: SIZES, featured: true },
-  { slug: "mega-combo-hombre", name: "Mega Combo Hombre", tagline: "El más completo: renová todo de una", emoji: "🔥", price: 89900, regularPrice: 118000, category: "Hombre", items: ["5 remeras lisas de algodón", "6 boxers", "6 pares de medias"], sizes: SIZES, featured: true },
-  { slug: "combo-boxers-medias", name: "Combo Boxers + Medias", tagline: "Lo que más se gasta, a mejor precio", emoji: "🩲", price: 32900, regularPrice: 40000, category: "Hombre", items: ["4 boxers", "4 pares de medias"], sizes: SIZES, featured: true },
-  { slug: "combo-semana-hombre", name: "Combo Semana", tagline: "Un boxer y un par de medias para cada día", emoji: "📅", price: 54900, regularPrice: 70000, category: "Hombre", items: ["7 boxers", "7 pares de medias"], sizes: SIZES },
-  { slug: "combo-remeras-hombre", name: "Combo Remeras x3", tagline: "Remeras lisas básicas que van con todo", emoji: "👕", price: 36900, regularPrice: 45000, category: "Hombre", items: ["3 remeras lisas de algodón (colores surtidos)"], sizes: SIZES },
-  { slug: "combo-remeras-unisex", name: "Combo Remeras Oversize Unisex", tagline: "Calce amplio, para él o para ella", emoji: "🧥", price: 42900, regularPrice: 52500, category: "Unisex", items: ["3 remeras oversize de algodón"], sizes: SIZES, featured: true },
-  { slug: "combo-unisex-completo", name: "Combo Unisex Completo", tagline: "Remeras y medias para compartir", emoji: "✨", price: 39900, regularPrice: 50000, category: "Unisex", items: ["2 remeras oversize de algodón", "6 pares de medias"], sizes: SIZES },
-  { slug: "combo-medias-unisex", name: "Combo Medias x6", tagline: "Seis pares, talle único", emoji: "🧦", price: 14900, regularPrice: 18000, category: "Unisex", items: ["6 pares de medias (talle único 39-45)"], sizes: ["Único"] },
+  { slug: "combo-basico-mujer", name: "Combo Básico Mujer", tagline: "Remeras, bombachas y medias para toda la semana", emoji: "👚", price: 44900, regularPrice: 56000, items: ["3 remeras lisas de algodón", "3 bombachas de algodón", "3 pares de medias"], sizes: SIZES, featured: true },
+  { slug: "mega-combo-mujer", name: "Mega Combo Mujer", tagline: "El más completo: renová todo de una", emoji: "🔥", price: 84900, regularPrice: 108000, items: ["5 remeras lisas de algodón", "6 bombachas de algodón", "6 pares de medias"], sizes: SIZES, featured: true },
+  { slug: "combo-lenceria", name: "Combo Lencería", tagline: "Tops y bombachas cómodos para todos los días", emoji: "👙", price: 39900, regularPrice: 49000, items: ["3 tops sin aro", "3 bombachas de algodón"], sizes: SIZES, featured: true },
+  { slug: "combo-bombachas-x6", name: "Combo Bombachas x6", tagline: "Algodón suave, colores surtidos", emoji: "🌸", price: 24900, regularPrice: 30000, items: ["6 bombachas de algodón (colores surtidos)"], sizes: SIZES },
+  { slug: "combo-semana-mujer", name: "Combo Semana", tagline: "Una bombacha y un par de medias para cada día", emoji: "📅", price: 44900, regularPrice: 56000, items: ["7 bombachas de algodón", "7 pares de medias"], sizes: SIZES },
+  { slug: "combo-remeras-mujer", name: "Combo Remeras x3", tagline: "Remeras entalladas que van con todo", emoji: "👕", price: 34900, regularPrice: 42000, items: ["3 remeras entalladas de algodón (colores surtidos)"], sizes: SIZES },
+  { slug: "combo-remeras-oversize-mujer", name: "Combo Remeras Oversize", tagline: "Calce amplio y canchero", emoji: "✨", price: 39900, regularPrice: 48000, items: ["3 remeras oversize de algodón"], sizes: SIZES, featured: true },
+  { slug: "combo-medias-mujer", name: "Combo Medias x6", tagline: "Seis pares, talle único", emoji: "🧦", price: 12900, regularPrice: 15600, items: ["6 pares de medias (talle único 35-40)"], sizes: ["Único"] },
 ];
 
 async function main() {
-  if ((await prisma.combo.count()) > 0) {
-    console.log("Ya hay combos cargados, no se carga nada.");
+  const meta = await prisma.appMeta.findUnique({ where: { key: "catalogVersion" } });
+  // Las bases creadas antes de existir esta marca tienen el catálogo 1 si ya tienen combos
+  const current = meta ? Number(meta.value) : (await prisma.combo.count()) > 0 ? 1 : 0;
+
+  if (current >= CATALOG_VERSION) {
+    console.log("El catálogo de ejemplo ya está al día.");
     return;
   }
+
+  if (current > 0) {
+    const removed = await prisma.combo.deleteMany({ where: { slug: { in: OLD_EXAMPLE_SLUGS } } });
+    console.log(`Se sacaron ${removed.count} combos de ejemplo anteriores (los pedidos viejos conservan nombre y precio).`);
+  }
+
+  let created = 0;
   for (const [i, { sizes, ...combo }] of combos.entries()) {
+    if (await prisma.combo.findUnique({ where: { slug: combo.slug } })) continue;
     await prisma.combo.create({
       data: {
         ...combo,
+        category: "Mujer",
         position: i,
         sizes: { create: sizes.map((size, j) => ({ size, stock: 10, position: j })) },
       },
     });
+    created++;
   }
-  console.log(`Se cargaron ${combos.length} combos de ejemplo.`);
+
+  await prisma.appMeta.upsert({
+    where: { key: "catalogVersion" },
+    create: { key: "catalogVersion", value: String(CATALOG_VERSION) },
+    update: { value: String(CATALOG_VERSION) },
+  });
+  console.log(`Se cargaron ${created} combos de ejemplo para mujer.`);
 }
 
 main()
