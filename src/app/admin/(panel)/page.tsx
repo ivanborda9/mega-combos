@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getDashboardStats, parsePeriod, PERIODS } from "@/lib/stats";
+import { getDashboardStats, getSalesPercent, parsePeriod, PERIODS } from "@/lib/stats";
 import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { STATUS_LABELS, ORDER_STATUSES } from "@/lib/orders";
@@ -8,7 +8,7 @@ import { DailySalesChart, RankBars } from "@/components/admin/DailySalesChart";
 
 export default async function AdminDashboard({ searchParams }: { searchParams: { periodo?: string } }) {
   const period = parsePeriod(searchParams.periodo);
-  const stats = await getDashboardStats(period);
+  const [stats, share] = await Promise.all([getDashboardStats(period), getSalesPercent()]);
 
   return (
     <div className="space-y-6">
@@ -25,6 +25,19 @@ export default async function AdminDashboard({ searchParams }: { searchParams: {
           </Link>
         ))}
       </PageHeader>
+
+      <section className="rounded-2xl bg-red-600 p-5 text-white shadow-lg ring-4 ring-red-200 sm:p-6" aria-label={`Porcentaje ${share.percent}%`}>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-widest text-red-100">Porcentaje {share.percent}%</p>
+            <p className="mt-1 text-4xl font-extrabold tabular-nums sm:text-5xl">{formatPrice(share.amount)}</p>
+          </div>
+          <span className="rounded-full bg-white px-4 py-1.5 text-2xl font-extrabold text-red-600">{share.percent}%</span>
+        </div>
+        <p className="mt-3 text-sm text-red-50">
+          {share.percent}% de {formatPrice(share.revenue)} en ventas totales · {share.orders} pedidos desde el primero (sin contar cancelados).
+        </p>
+      </section>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Ventas de hoy" value={formatPrice(stats.todayTotals.revenue)} hint={`${stats.todayTotals.orders} pedidos`} />

@@ -8,6 +8,20 @@ export function dayKey(date: Date) {
   return dayKeyFormatter.format(date);
 }
 
+/** Porcentaje fijo sobre todas las ventas. Se cambia solo acá, en el código: no hay forma de editarlo desde el admin. */
+export const SALES_PERCENT = 20;
+
+/** Total de todas las ventas (pedidos no cancelados, desde el primero) y el porcentaje fijo sobre ese total. */
+export async function getSalesPercent() {
+  const all = await prisma.order.aggregate({
+    where: { status: { not: "CANCELADO" } },
+    _sum: { total: true },
+    _count: true,
+  });
+  const revenue = all._sum.total ?? 0;
+  return { percent: SALES_PERCENT, revenue, orders: all._count, amount: Math.round((revenue * SALES_PERCENT) / 100) };
+}
+
 export const PERIODS = { "7": "Últimos 7 días", "30": "Últimos 30 días", "90": "Últimos 90 días", todo: "Todo" } as const;
 export type Period = keyof typeof PERIODS;
 
