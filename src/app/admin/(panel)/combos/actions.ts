@@ -7,15 +7,15 @@ import { requireAdmin } from "@/lib/adminSession";
 import { deleteStoredImages, isValidImageUrl } from "@/lib/images";
 import { CATEGORIES, slugify } from "@/lib/combos";
 import { UserError, errorMessage } from "@/lib/errors";
+import { parsePrice } from "@/lib/margin";
 
 type SizeRow = { size: string; stock: number };
 
 function parseForm(formData: FormData) {
   const str = (key: string) => String(formData.get(key) ?? "").trim();
   const int = (key: string, label: string) => {
-    const raw = str(key).replace(/\./g, "").replace(",", ".");
-    if (!raw) return null;
-    const n = Math.round(Number(raw));
+    const n = parsePrice(str(key));
+    if (n === null) return null;
     if (!Number.isFinite(n) || n < 0) throw new UserError(`"${label}" tiene que ser un número.`);
     return n;
   };
@@ -25,6 +25,7 @@ function parseForm(formData: FormData) {
   const price = int("price", "Precio");
   if (!price) throw new UserError("Falta el precio.");
   const regularPrice = int("regularPrice", "Precio normal");
+  const costPrice = int("costPrice", "Precio de costo");
   const category = str("category");
 
   let sizes: SizeRow[];
@@ -59,6 +60,7 @@ function parseForm(formData: FormData) {
       .slice(0, 30),
     price,
     regularPrice: regularPrice && regularPrice > price ? regularPrice : null,
+    costPrice: costPrice || null,
     emoji: str("emoji").slice(0, 8) || "👕",
     featured: formData.get("featured") === "on",
     active: formData.get("active") === "on",

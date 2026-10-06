@@ -26,8 +26,12 @@ entrega.
 - **Pedidos**: listado con filtro por estado ("Para despachar", etc.) y
   búsqueda; detalle con los datos del cliente y cambio de estado (Pendiente,
   Confirmado, Despachado, Entregado, Cancelado). Cancelar devuelve el stock
+- **Ganancias**: ventas, costo de lo vendido, ganancia, margen, ticket
+  promedio, el 20% y la ganancia después del 20%, por combo, por mes y por
+  categoría, para 7, 30, 90 días o todo
 - **Combos**: crear, editar, ocultar o eliminar combos; varias fotos (se suben
-  desde la galería del celular o la compu), precio, precio
+  desde la galería del celular o la compu), precio de costo (privado) con la
+  ganancia calculada al escribir, precio, precio
   normal, prendas incluidas, talles y stock por talle
 - **Stock**: todos los combos y talles en una sola pantalla para corregir o
   cargar mercadería

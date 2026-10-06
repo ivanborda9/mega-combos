@@ -20,6 +20,8 @@ model Combo {
   price        Int
   /// Precio de las prendas por separado, para mostrar el ahorro
   regularPrice Int?
+  /// Precio de costo: dato privado del admin, nunca se muestra en la tienda
+  costPrice    Int?
   /// Foto vieja de antes de que existieran varias fotos por combo; ahora se usan `photos`
   imageUrl     String?
   emoji        String      @default("👕")
@@ -108,5 +110,7 @@ model OrderItem {
   comboName String
   size      String
   price     Int
+  /// Costo unitario al momento de la venta (para calcular la ganancia aunque después cambie el costo)
+  costPrice Int?
   quantity  Int
 }

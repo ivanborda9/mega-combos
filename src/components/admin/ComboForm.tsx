@@ -2,6 +2,7 @@ import type { Combo, ComboPhoto, ComboSize } from "@prisma/client";
 import { CATEGORIES, DEFAULT_SIZES, comboPhotoUrls } from "@/lib/combos";
 import { Card, inputClass } from "./ui";
 import { PhotosEditor } from "./PhotosEditor";
+import { PriceFields } from "./PriceFields";
 import { SizesEditor } from "./SizesEditor";
 import { SubmitButton } from "./SubmitButton";
 
@@ -57,16 +58,7 @@ export function ComboForm({ action, combo }: Props) {
         </Card>
 
         <Card title="Precio">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block text-sm font-medium">
-              Precio del combo * <span className="font-normal text-gray-500">($)</span>
-              <input name="price" required inputMode="numeric" defaultValue={combo?.price} placeholder="49900" className={inputClass} />
-            </label>
-            <label className="block text-sm font-medium">
-              Precio normal <span className="font-normal text-gray-500">(por separado, para mostrar el ahorro)</span>
-              <input name="regularPrice" inputMode="numeric" defaultValue={combo?.regularPrice ?? ""} placeholder="62500" className={inputClass} />
-            </label>
-          </div>
+          <PriceFields price={combo?.price} regularPrice={combo?.regularPrice} costPrice={combo?.costPrice} />
         </Card>
 
         <Card title="Talles y stock">

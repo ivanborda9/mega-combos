@@ -52,7 +52,14 @@ export async function POST(req: Request) {
         if (updated.count === 0) {
           throw new OrderError(`No hay stock suficiente de ${combo.name} (talle ${line.size}). Quedan ${size.stock}.`);
         }
-        items.push({ comboId: combo.id, comboName: combo.name, size: line.size, price: combo.price, quantity: line.quantity });
+        items.push({
+          comboId: combo.id,
+          comboName: combo.name,
+          size: line.size,
+          price: combo.price,
+          costPrice: combo.costPrice,
+          quantity: line.quantity,
+        });
       }
 
       return tx.order.create({

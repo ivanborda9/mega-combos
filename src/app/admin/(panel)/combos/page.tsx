@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
+import { profit } from "@/lib/margin";
 import { comboPhotoUrls, isOneSize, totalStock } from "@/lib/combos";
 import { Card, Notice, PageHeader, buttonClass } from "@/components/admin/ui";
 import { ComboVisual } from "@/components/ComboVisual";
@@ -25,12 +26,13 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
         {combos.length === 0 ? (
           <p className="p-6 text-sm text-gray-500">Todavía no cargaste combos.</p>
         ) : (
-          <table className="w-full min-w-[720px] text-sm">
+          <table className="w-full min-w-[820px] text-sm">
             <thead className="border-b text-left text-gray-500">
               <tr>
                 <th className="px-4 py-3 font-medium">Combo</th>
                 <th className="px-4 py-3 font-medium">Categoría</th>
                 <th className="px-4 py-3 text-right font-medium">Precio</th>
+                <th className="px-4 py-3 text-right font-medium">Ganancia</th>
                 <th className="px-4 py-3 font-medium">Stock</th>
                 <th className="px-4 py-3 font-medium">Estado</th>
                 <th />
@@ -54,6 +56,17 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                     </td>
                     <td className="px-4 py-3">{c.category}</td>
                     <td className="px-4 py-3 text-right tabular-nums">{formatPrice(c.price)}</td>
+                    <td className="px-4 py-3 text-right tabular-nums">
+                      {(() => {
+                        const p = profit(c.price, c.costPrice);
+                        if (!p) return <span className="text-xs text-gray-400">sin costo</span>;
+                        return (
+                          <span className={p.amount < 0 ? "font-semibold text-red-600" : "font-semibold text-green-700"}>
+                            {p.percent.toLocaleString("es-AR")}%<span className="block text-xs font-normal text-gray-500">{formatPrice(p.amount)}</span>
+                          </span>
+                        );
+                      })()}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`font-semibold ${stock === 0 ? "text-red-600" : ""}`}>{stock}</span>
                       {!isOneSize(c.sizes) && (
