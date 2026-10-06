@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         });
         const size = combo?.sizes[0];
         if (!combo || !combo.active || !size) {
-          throw new OrderError("Uno de los combos del carrito ya no está disponible. Quitalo e intentá de nuevo.");
+          throw new OrderError("Uno de los artículos del carrito ya no está disponible. Quitalo e intentá de nuevo.");
         }
         // Descuenta solo si alcanza el stock (evita vender de más si dos personas compran a la vez)
         const updated = await tx.comboSize.updateMany({

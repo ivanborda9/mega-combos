@@ -57,7 +57,7 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
         <p className="text-6xl">🛒</p>
         <h1 className="mt-4 text-2xl font-bold">Tu carrito está vacío</h1>
         <Link href="/" className="mt-6 inline-block rounded-full bg-brand-500 px-6 py-3 font-semibold text-white hover:bg-brand-600">
-          Ver combos
+          Ver artículos
         </Link>
       </div>
     );
@@ -80,7 +80,7 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
                   <ComboVisual imageUrl={combo.imageUrl} emoji={combo.emoji} name={combo.name} emojiClassName="text-3xl" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <Link href={`/combo/${combo.slug}`} className="font-semibold hover:underline">
+                  <Link href={`/articulo/${combo.slug}`} className="font-semibold hover:underline">
                     {combo.name}
                   </Link>
                   <p className="text-sm text-gray-500">

@@ -33,7 +33,7 @@ export function PriceFields({ price, regularPrice, costPrice }: Props) {
           />
         </label>
         <label className="block text-sm font-medium">
-          Precio normal <span className="font-normal text-gray-500">(por separado, para mostrar el ahorro)</span>
+          Precio anterior <span className="font-normal text-gray-500">(opcional, se muestra tachado)</span>
           <input name="regularPrice" inputMode="numeric" defaultValue={regularPrice ?? ""} placeholder="62500" className={inputClass} />
         </label>
       </div>
@@ -56,7 +56,7 @@ export function PriceFields({ price, regularPrice, costPrice }: Props) {
             <div className={`mt-1 rounded-lg px-3 py-2 ${loss ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
               <p className="text-xl font-extrabold tabular-nums">{result.percent.toLocaleString("es-AR")}%</p>
               <p className="text-xs">
-                {loss ? "Perdés" : "Ganás"} {formatPrice(Math.abs(result.amount))} por combo, sobre el precio de venta
+                {loss ? "Perdés" : "Ganás"} {formatPrice(Math.abs(result.amount))} por artículo, sobre el precio de venta
               </p>
             </div>
           ) : (

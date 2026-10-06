@@ -16,7 +16,7 @@ export function ComboForm({ action, combo }: Props) {
     <form action={action} className="grid gap-6 lg:grid-cols-[1fr_320px]">
       {combo && <input type="hidden" name="id" value={combo.id} />}
       <div className="space-y-6">
-        <Card title="Datos del combo">
+        <Card title="Datos del artículo">
           <div className="space-y-4">
             <label className="block text-sm font-medium">
               Nombre *
@@ -90,7 +90,7 @@ export function ComboForm({ action, combo }: Props) {
             </label>
           </div>
         </Card>
-        <SubmitButton>{combo ? "Guardar cambios" : "Crear combo"}</SubmitButton>
+        <SubmitButton>{combo ? "Guardar cambios" : "Crear artículo"}</SubmitButton>
       </div>
     </form>
   );

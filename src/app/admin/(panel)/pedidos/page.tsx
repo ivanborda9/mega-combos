@@ -90,7 +90,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
                 <th className="px-4 py-3 font-medium">Fecha</th>
                 <th className="px-4 py-3 font-medium">Cliente</th>
                 <th className="px-4 py-3 font-medium">Entrega</th>
-                <th className="px-4 py-3 font-medium">Combos</th>
+                <th className="px-4 py-3 font-medium">Artículos</th>
                 <th className="px-4 py-3 text-right font-medium">Total</th>
                 <th className="px-4 py-3 font-medium">Estado</th>
                 <th />

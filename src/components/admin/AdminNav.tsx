@@ -7,7 +7,7 @@ const LINKS = [
   { href: "/admin", label: "Resumen", icon: "📊", staff: false },
   { href: "/admin/pedidos", label: "Pedidos", icon: "🧾", staff: true },
   { href: "/admin/ganancias", label: "Ganancias", icon: "💰", staff: false },
-  { href: "/admin/combos", label: "Combos", icon: "👕", staff: false },
+  { href: "/admin/articulos", label: "Artículos", icon: "👕", staff: false },
   { href: "/admin/stock", label: "Stock", icon: "📦", staff: false },
   { href: "/admin/carrusel", label: "Carrusel", icon: "🖼️", staff: false },
 ];

@@ -32,7 +32,7 @@ export default async function OrderDetailPage({ params, searchParams }: { params
       {searchParams.error && <Notice kind="error">{searchParams.error}</Notice>}
 
       <div className="grid gap-6 md:grid-cols-[1fr_260px]">
-        <Card title="Combos">
+        <Card title="Artículos">
           <ul className="divide-y text-sm">
             {order.items.map((item) => (
               <li key={item.id} className="flex justify-between gap-4 py-2">
@@ -134,7 +134,7 @@ export default async function OrderDetailPage({ params, searchParams }: { params
                   </form>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-gray-500">Al cancelar, el stock de estos combos vuelve a estar disponible.</p>
+              <p className="mt-3 text-xs text-gray-500">Al cancelar, el stock de estos artículos vuelve a estar disponible.</p>
             </Card>
           )}
         </div>

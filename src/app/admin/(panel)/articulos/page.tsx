@@ -15,21 +15,21 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
 
   return (
     <div>
-      <PageHeader title="Combos">
-        <Link href="/admin/combos/nuevo" className={buttonClass}>
-          + Nuevo combo
+      <PageHeader title="Artículos">
+        <Link href="/admin/articulos/nuevo" className={buttonClass}>
+          + Nuevo artículo
         </Link>
       </PageHeader>
-      {searchParams.ok === "eliminado" && <Notice kind="ok">Combo eliminado.</Notice>}
+      {searchParams.ok === "eliminado" && <Notice kind="ok">Artículo eliminado.</Notice>}
 
       <Card className="overflow-x-auto p-0">
         {combos.length === 0 ? (
-          <p className="p-6 text-sm text-gray-500">Todavía no cargaste combos.</p>
+          <p className="p-6 text-sm text-gray-500">Todavía no cargaste artículos.</p>
         ) : (
           <table className="w-full min-w-[820px] text-sm">
             <thead className="border-b text-left text-gray-500">
               <tr>
-                <th className="px-4 py-3 font-medium">Combo</th>
+                <th className="px-4 py-3 font-medium">Artículo</th>
                 <th className="px-4 py-3 font-medium">Categoría</th>
                 <th className="px-4 py-3 text-right font-medium">Precio</th>
                 <th className="px-4 py-3 text-right font-medium">Ganancia</th>
@@ -44,7 +44,7 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                 return (
                   <tr key={c.id} className={c.active ? "" : "bg-gray-50 text-gray-500"}>
                     <td className="px-4 py-3">
-                      <Link href={`/admin/combos/${c.id}`} className="flex items-center gap-3 font-medium hover:underline">
+                      <Link href={`/admin/articulos/${c.id}`} className="flex items-center gap-3 font-medium hover:underline">
                         <span className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
                           <ComboVisual imageUrl={comboPhotoUrls(c)[0] ?? null} emoji={c.emoji} name={c.name} emojiClassName="text-xl" />
                         </span>
@@ -87,7 +87,7 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                       </form>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Link href={`/admin/combos/${c.id}`} className="font-medium text-brand-700 hover:underline">
+                      <Link href={`/admin/articulos/${c.id}`} className="font-medium text-brand-700 hover:underline">
                         Editar
                       </Link>
                     </td>

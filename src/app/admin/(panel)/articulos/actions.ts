@@ -21,7 +21,7 @@ function parseForm(formData: FormData) {
   };
 
   const name = str("name");
-  if (!name) throw new UserError("Falta el nombre del combo.");
+  if (!name) throw new UserError("Falta el nombre del artículo.");
   const price = int("price", "Precio");
   if (!price) throw new UserError("Falta el precio.");
   const regularPrice = int("regularPrice", "Precio normal");
@@ -71,7 +71,7 @@ function parseForm(formData: FormData) {
 }
 
 async function uniqueSlug(base: string, exceptId?: string) {
-  let slug = base || "combo";
+  let slug = base || "articulo";
   for (let i = 2; ; i++) {
     const existing = await prisma.combo.findUnique({ where: { slug }, select: { id: true } });
     if (!existing || existing.id === exceptId) return slug;
@@ -98,10 +98,10 @@ export async function createCombo(formData: FormData) {
     });
     id = combo.id;
   } catch (e) {
-    redirect(`/admin/combos/nuevo?error=${encodeURIComponent(errorMessage(e))}`);
+    redirect(`/admin/articulos/nuevo?error=${encodeURIComponent(errorMessage(e))}`);
   }
   refresh();
-  redirect(`/admin/combos/${id}?ok=creado`);
+  redirect(`/admin/articulos/${id}?ok=creado`);
 }
 
 export async function updateCombo(formData: FormData) {
@@ -128,10 +128,10 @@ export async function updateCombo(formData: FormData) {
     const before = [current.imageUrl, ...current.photos.map((p) => p.url)];
     await deleteStoredImages(before.filter((url) => url && !photos.includes(url)));
   } catch (e) {
-    redirect(`/admin/combos/${id}?error=${encodeURIComponent(errorMessage(e))}`);
+    redirect(`/admin/articulos/${id}?error=${encodeURIComponent(errorMessage(e))}`);
   }
   refresh();
-  redirect(`/admin/combos/${id}?ok=guardado`);
+  redirect(`/admin/articulos/${id}?ok=guardado`);
 }
 
 export async function toggleComboActive(formData: FormData) {
@@ -152,5 +152,5 @@ export async function deleteCombo(formData: FormData) {
     await deleteStoredImages([combo.imageUrl, ...combo.photos.map((p) => p.url)]);
   }
   refresh();
-  redirect("/admin/combos?ok=eliminado");
+  redirect("/admin/articulos?ok=eliminado");
 }

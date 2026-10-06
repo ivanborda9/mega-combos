@@ -15,23 +15,23 @@ export default async function EditComboPage({ params, searchParams }: { params: 
 
   return (
     <div>
-      <Link href="/admin/combos" className="text-sm text-gray-500 hover:text-gray-900">
-        ← Combos
+      <Link href="/admin/articulos" className="text-sm text-gray-500 hover:text-gray-900">
+        ← Artículos
       </Link>
       <PageHeader title={combo.name}>
         {combo.active && (
-          <Link href={`/combo/${combo.slug}`} target="_blank" className="text-sm font-medium text-brand-700 hover:underline">
+          <Link href={`/articulo/${combo.slug}`} target="_blank" className="text-sm font-medium text-brand-700 hover:underline">
             Ver en la tienda ↗
           </Link>
         )}
       </PageHeader>
       {searchParams.error && <Notice kind="error">{searchParams.error}</Notice>}
-      {searchParams.ok && <Notice kind="ok">{searchParams.ok === "creado" ? "Combo creado." : "Cambios guardados."}</Notice>}
+      {searchParams.ok && <Notice kind="ok">{searchParams.ok === "creado" ? "Artículo creado." : "Cambios guardados."}</Notice>}
 
       <ComboForm action={updateCombo} combo={combo} />
 
       <Card className="mt-8 max-w-xl">
-        <h2 className="font-bold text-red-700">Eliminar combo</h2>
+        <h2 className="font-bold text-red-700">Eliminar artículo</h2>
         <p className="mb-3 mt-1 text-sm text-gray-600">
           Se borra de la tienda. Los pedidos anteriores conservan el nombre y el precio. Si solo querés ocultarlo un
           tiempo, desmarcá &quot;Visible en la tienda&quot;.

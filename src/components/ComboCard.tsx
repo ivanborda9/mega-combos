@@ -11,7 +11,7 @@ export function ComboCard({ combo }: { combo: PublicCombo }) {
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-      <Link href={`/combo/${combo.slug}`} className="relative block h-52">
+      <Link href={`/articulo/${combo.slug}`} className="relative block h-52">
         <ComboVisual imageUrl={combo.imageUrl} emoji={combo.emoji} name={combo.name} />
         {savings > 0 && (
           <span className="absolute left-3 top-3 rounded-full bg-brand-600 px-2.5 py-1 text-xs font-bold text-white">
@@ -26,7 +26,7 @@ export function ComboCard({ combo }: { combo: PublicCombo }) {
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{combo.category}</p>
-        <Link href={`/combo/${combo.slug}`} className="text-lg font-bold leading-tight hover:underline">
+        <Link href={`/articulo/${combo.slug}`} className="text-lg font-bold leading-tight hover:underline">
           {combo.name}
         </Link>
         {combo.tagline && <p className="text-sm text-gray-600">{combo.tagline}</p>}
@@ -40,7 +40,7 @@ export function ComboCard({ combo }: { combo: PublicCombo }) {
             <AddToCartButton slug={combo.slug} size={combo.sizes[0].size} compact />
           ) : (
             <Link
-              href={`/combo/${combo.slug}`}
+              href={`/articulo/${combo.slug}`}
               className="rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600"
             >
               Elegir talle

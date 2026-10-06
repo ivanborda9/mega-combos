@@ -24,7 +24,7 @@ export default async function ComboPage({ params }: Props) {
   return (
     <div>
       <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">
-        ← Volver a los combos
+        ← Volver a los artículos
       </Link>
       <div className="mt-4 grid gap-8 md:grid-cols-2">
         <ComboGallery photos={comboPhotoUrls(combo)} emoji={combo.emoji} name={combo.name} />

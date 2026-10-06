@@ -21,17 +21,17 @@ export default async function HomePage() {
         <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-brand-500 to-amber-400 px-6 py-12 text-white sm:px-12">
           <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-white/80">Remeras · Lencería · Medias</p>
           <h1 className="max-w-2xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            Combos de ropa para mujer, a mejor precio
+            Ropa para mujer, a mejor precio
           </h1>
           <p className="mt-4 max-w-xl text-lg text-white/90">
-            Remeras, bombachas, tops y medias en combos que te salen más baratos que comprar cada prenda por separado. Elegí tu
+            Remeras, bombachas, tops y medias a precios que te van a encantar. Elegí tu
             talle y pedí por WhatsApp.
           </p>
           <a
-            href="#combos"
+            href="#articulos"
             className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-bold text-brand-700 shadow hover:bg-brand-50"
           >
-            Ver combos
+            Ver artículos
           </a>
         </section>
       )}
@@ -47,20 +47,20 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section id="combos" className="scroll-mt-20">
-        <h2 className="mb-4 text-2xl font-bold">Todos los combos</h2>
+      <section id="articulos" className="scroll-mt-20">
+        <h2 className="mb-4 text-2xl font-bold">Todos los artículos</h2>
         {combos.length > 0 ? (
           <CategoryFilter combos={combos} />
         ) : (
           <p className="rounded-2xl bg-white p-8 text-center text-gray-500 ring-1 ring-black/5">
-            Todavía no hay combos cargados.
+            Todavía no hay artículos cargados.
           </p>
         )}
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
         {[
-          ["👕", "Elegí tu combo y talle", "Sumá al carrito los combos que quieras."],
+          ["👕", "Elegí tu artículo y talle", "Sumá al carrito todo lo que quieras."],
           ["💬", "Mandalo por WhatsApp", "Te llega el detalle listo para enviar."],
           ["🚚", "Coordinamos la entrega", "Te respondemos para acordar pago y envío."],
         ].map(([icon, title, text]) => (

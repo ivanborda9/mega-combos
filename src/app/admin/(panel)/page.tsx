@@ -38,14 +38,14 @@ export default async function AdminDashboard({ searchParams }: { searchParams: {
         <Link href="/admin/pedidos?estado=PENDIENTE" className="block">
           <Stat label="Pedidos pendientes" value={String(stats.pendingCount)} hint="Ver pedidos →" />
         </Link>
-        <Stat label="Stock total" value={`${stats.stockUnits} combos`} hint={`Valor a precio de venta: ${formatPrice(stats.stockValue)}`} />
+        <Stat label="Stock total" value={`${stats.stockUnits} u.`} hint={`Valor a precio de venta: ${formatPrice(stats.stockValue)}`} />
       </div>
 
       <h2 className="pt-2 text-lg font-bold">{PERIODS[period]}</h2>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Facturación" value={formatPrice(stats.totals.revenue)} />
         <Stat label="Pedidos" value={String(stats.totals.orders)} />
-        <Stat label="Combos vendidos" value={String(stats.totals.units)} />
+        <Stat label="Artículos vendidos" value={String(stats.totals.units)} />
         <Stat label="Ticket promedio" value={formatPrice(stats.averageTicket)} />
       </div>
 
@@ -58,7 +58,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: {
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card title="Combos más vendidos">
+        <Card title="Artículos más vendidos">
           {stats.topCombos.length > 0 ? (
             <RankBars
               rows={stats.topCombos.map((c) => ({

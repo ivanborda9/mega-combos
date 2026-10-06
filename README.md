@@ -14,7 +14,7 @@ entrega.
 ## Tienda
 
 - `/` — carrusel de imágenes, combos destacados y listado con filtro por categoría
-- `/combo/[slug]` — qué incluye, precio, ahorro y selector de talle (los talles sin stock no se pueden elegir)
+- `/articulo/[slug]` — qué incluye, precio, ahorro y selector de talle (los talles sin stock no se pueden elegir)
 - `/carrito` — carrito, datos del cliente y "Confirmar pedido"
 - `/pedido/[id]` — pedido registrado con el botón para enviarlo por WhatsApp
 
@@ -27,13 +27,13 @@ entrega.
   búsqueda; detalle con los datos del cliente y cambio de estado (Pendiente,
   Confirmado, Despachado, Entregado, Cancelado). Cancelar devuelve el stock
 - **Ganancias**: ventas, costo de lo vendido, ganancia, margen, ticket
-  promedio, el 20% y la ganancia después del 20%, por combo, por mes y por
+  promedio, el 20% y la ganancia después del 20%, por artículo, por mes y por
   categoría, para 7, 30, 90 días o todo
-- **Combos**: crear, editar, ocultar o eliminar combos; varias fotos (se suben
+- **Artículos**: crear, editar, ocultar o eliminar artículos; varias fotos (se suben
   desde la galería del celular o la compu), precio de costo (privado) con la
   ganancia calculada al escribir, precio, precio
   normal, prendas incluidas, talles y stock por talle
-- **Stock**: todos los combos y talles en una sola pantalla para corregir o
+- **Stock**: todos los artículos y talles en una sola pantalla para corregir o
   cargar mercadería
 - **Carrusel**: imágenes de la portada con título, texto y link; ordenar,
   ocultar o eliminar

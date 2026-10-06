@@ -44,16 +44,16 @@ export default async function ProfitsPage({ searchParams }: { searchParams: { pe
 
       {s.total.revenueWithoutCost > 0 && (
         <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          Hay {formatPrice(s.total.revenueWithoutCost)} en ventas de combos <b>sin precio de costo</b>: no suman a la ganancia. Cargá el costo en{" "}
-          <Link href="/admin/combos" className="font-semibold underline">
-            Combos
+          Hay {formatPrice(s.total.revenueWithoutCost)} en ventas de artículos <b>sin precio de costo</b>: no suman a la ganancia. Cargá el costo en{" "}
+          <Link href="/admin/articulos" className="font-semibold underline">
+            Artículos
           </Link>{" "}
           para que el cálculo sea completo.
         </p>
       )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Ventas" value={formatPrice(s.total.revenue)} hint={`${s.orders} pedidos · ${s.total.units} combos`} />
+        <Stat label="Ventas" value={formatPrice(s.total.revenue)} hint={`${s.orders} pedidos · ${s.total.units} artículos`} />
         <Stat label="Costo de lo vendido" value={formatPrice(s.total.cost)} />
         <Stat label="Ganancia" value={formatPrice(s.total.profit)} hint="Ventas menos costo" />
         <Stat label="Margen de ganancia" value={pct(s.margin)} hint="Ganancia sobre el precio de venta" />
@@ -69,14 +69,14 @@ export default async function ProfitsPage({ searchParams }: { searchParams: { pe
         />
       </div>
 
-      <Card title="Por combo" className="overflow-x-auto">
+      <Card title="Por artículo" className="overflow-x-auto">
         {s.combos.length === 0 ? (
           <p className="text-sm text-gray-500">Sin ventas en este período.</p>
         ) : (
           <table className="w-full min-w-[720px] text-sm">
             <thead className="border-b text-left text-gray-500">
               <tr>
-                <th className="py-2 pr-3 font-medium">Combo</th>
+                <th className="py-2 pr-3 font-medium">Artículo</th>
                 <th className="px-3 py-2 text-right font-medium">Vendidos</th>
                 <th className="px-3 py-2 text-right font-medium">Ventas</th>
                 <th className="px-3 py-2 text-right font-medium">% de las ventas</th>
@@ -171,7 +171,7 @@ export default async function ProfitsPage({ searchParams }: { searchParams: { pe
       </div>
 
       <p className="text-xs text-gray-500">
-        Se cuentan los pedidos que no están cancelados. La ganancia de cada venta usa el costo que tenía el combo en ese momento. El margen es la
+        Se cuentan los pedidos que no están cancelados. La ganancia de cada venta usa el costo que tenía el artículo en ese momento. El margen es la
         ganancia sobre el precio de venta.
       </p>
     </div>

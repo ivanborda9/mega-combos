@@ -19,7 +19,7 @@ function BannerFields({ title, subtitle, linkUrl, active = true }: BannerFieldsP
         <input name="subtitle" defaultValue={subtitle ?? ""} placeholder="3 remeras + 3 bombachas a precio especial" className={inputClass} />
       </label>
       <label className="block text-sm font-medium">
-        Link al tocar <span className="font-normal text-gray-500">(opcional, ej. /combo/mega-combo-mujer)</span>
+        Link al tocar <span className="font-normal text-gray-500">(opcional, ej. /articulo/nombre-del-articulo)</span>
         <input name="linkUrl" defaultValue={linkUrl ?? ""} className={inputClass} />
       </label>
       <label className="flex items-center gap-2 text-sm">

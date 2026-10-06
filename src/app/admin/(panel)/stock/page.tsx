@@ -28,7 +28,7 @@ export default async function StockPage({ searchParams }: { searchParams: { ok?:
       </PageHeader>
       {searchParams.ok && <Notice kind="ok">Stock actualizado.</Notice>}
       <p className="mb-4 text-sm text-gray-600">
-        Hay <b>{units}</b> combos en stock entre los visibles. Cada pedido descuenta el stock solo, y si lo cancelás vuelve. Acá podés
+        Hay <b>{units}</b> unidades en stock entre los visibles. Cada pedido descuenta el stock solo, y si lo cancelás vuelve. Acá podés
         corregirlo o cargar mercadería nueva.
       </p>
 
@@ -36,14 +36,14 @@ export default async function StockPage({ searchParams }: { searchParams: { ok?:
         {onlyLow && <input type="hidden" name="bajo" value="1" />}
         <Card className="overflow-x-auto p-0">
           {visible.length === 0 ? (
-            <p className="p-6 text-sm text-gray-500">{onlyLow ? "No hay combos con stock bajo." : "No hay combos cargados."}</p>
+            <p className="p-6 text-sm text-gray-500">{onlyLow ? "No hay artículos con stock bajo." : "No hay artículos cargados."}</p>
           ) : (
             <table className="w-full min-w-[560px] text-sm">
               <tbody className="divide-y">
                 {visible.map((c) => (
                   <tr key={c.id} className={c.active ? "" : "text-gray-400"}>
                     <td className="w-1/3 px-4 py-3 align-top">
-                      <Link href={`/admin/combos/${c.id}`} className="font-medium hover:underline">
+                      <Link href={`/admin/articulos/${c.id}`} className="font-medium hover:underline">
                         {c.name}
                       </Link>
                       {!c.active && <p className="text-xs">Oculto</p>}
