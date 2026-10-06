@@ -5,6 +5,7 @@ import { profit } from "@/lib/margin";
 import { comboPhotoUrls, isOneSize, totalStock } from "@/lib/combos";
 import { Card, Notice, PageHeader, buttonClass } from "@/components/admin/ui";
 import { ComboVisual } from "@/components/ComboVisual";
+import { InlinePriceInput } from "@/components/admin/InlinePriceInput";
 import { toggleComboActive } from "./actions";
 
 export default async function CombosAdminPage({ searchParams }: { searchParams: { ok?: string } }) {
@@ -55,7 +56,9 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                       </Link>
                     </td>
                     <td className="px-4 py-3">{c.category}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">{formatPrice(c.price)}</td>
+                    <td className="px-4 py-2 text-right">
+                      <InlinePriceInput id={c.id} price={c.price} />
+                    </td>
                     <td className="px-4 py-3 text-right tabular-nums">
                       {(() => {
                         const p = profit(c.price, c.costPrice);

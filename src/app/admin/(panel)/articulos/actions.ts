@@ -154,3 +154,13 @@ export async function deleteCombo(formData: FormData) {
   refresh();
   redirect("/admin/articulos?ok=eliminado");
 }
+
+/** Cambio rápido del precio de venta desde el listado de artículos */
+export async function updateComboPrice(id: string, rawPrice: string): Promise<{ error?: string; price?: number }> {
+  await requireAdmin();
+  const price = parsePrice(rawPrice);
+  if (!price || !Number.isFinite(price) || price <= 0) return { error: "Poné un precio válido." };
+  await prisma.combo.update({ where: { id }, data: { price } });
+  refresh();
+  return { price };
+}
