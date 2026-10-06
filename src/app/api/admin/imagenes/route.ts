@@ -4,7 +4,7 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth";
 import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_BYTES, saveImage } from "@/lib/images";
 
 export async function POST(req: Request) {
-  if (!(await verifySessionToken(cookies().get(SESSION_COOKIE_NAME)?.value))) {
+  if ((await verifySessionToken(cookies().get(SESSION_COOKIE_NAME)?.value)) !== "owner") {
     return NextResponse.json({ error: "Tu sesión venció. Volvé a entrar al admin." }, { status: 401 });
   }
 

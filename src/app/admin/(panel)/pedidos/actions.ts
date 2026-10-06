@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/adminSession";
-import { isOrderStatus } from "@/lib/orders";
+import { requireAdmin, requireStaff } from "@/lib/adminSession";
+import { dispatchedAtFor, isOrderStatus, TO_DISPATCH } from "@/lib/orders";
 
 class StockError extends Error {}
 
@@ -40,7 +40,7 @@ export async function updateOrderStatus(formData: FormData) {
           }
         }
       }
-      await tx.order.update({ where: { id }, data: { status } });
+      await tx.order.update({ where: { id }, data: { status, dispatchedAt: dispatchedAtFor(status, order.dispatchedAt) } });
     });
   } catch (e) {
     if (!(e instanceof StockError)) throw e;
@@ -49,4 +49,26 @@ export async function updateOrderStatus(formData: FormData) {
 
   revalidatePath("/admin", "layout");
   if (error) redirect(`/admin/pedidos/${id}?error=${encodeURIComponent(error)}`);
+}
+
+/** Empleado o dueño: marcar un pedido como despachado (solo si todavía no salió) */
+export async function markDispatched(formData: FormData) {
+  await requireStaff();
+  const id = String(formData.get("id"));
+  await prisma.order.updateMany({
+    where: { id, status: { in: TO_DISPATCH } },
+    data: { status: "DESPACHADO", dispatchedAt: new Date() },
+  });
+  revalidatePath("/admin", "layout");
+}
+
+/** Empleado o dueño: deshacer un "despachado" marcado por error (vuelve a Confirmado) */
+export async function undoDispatched(formData: FormData) {
+  await requireStaff();
+  const id = String(formData.get("id"));
+  await prisma.order.updateMany({
+    where: { id, status: "DESPACHADO" },
+    data: { status: "CONFIRMADO", dispatchedAt: null },
+  });
+  revalidatePath("/admin", "layout");
 }

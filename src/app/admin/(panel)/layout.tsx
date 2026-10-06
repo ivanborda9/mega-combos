@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getAdminRole } from "@/lib/adminSession";
+import { TO_DISPATCH } from "@/lib/orders";
 import { STORE_NAME } from "@/lib/config";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { logoutAction } from "../login/actions";
@@ -8,7 +10,10 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin" };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const pendingCount = await prisma.order.count({ where: { status: "PENDIENTE" } });
+  const role = await getAdminRole();
+  const isOwner = role === "owner";
+  // El dueño ve los pendientes de confirmar; el empleado, los que faltan despachar
+  const pendingCount = await prisma.order.count({ where: { status: isOwner ? "PENDIENTE" : { in: TO_DISPATCH } } });
 
   return (
     <div className="min-h-screen bg-gray-100 md:flex">
@@ -16,13 +21,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="flex items-center justify-between md:block">
           <div>
             <p className="font-extrabold">{STORE_NAME}</p>
-            <p className="text-xs text-gray-500">Administración</p>
+            <p className="text-xs text-gray-500">{isOwner ? "Administración" : "Despacho de pedidos"}</p>
           </div>
           <form action={logoutAction} className="md:hidden">
             <button className="text-sm text-gray-600">Salir</button>
           </form>
         </div>
-        <AdminNav pendingCount={pendingCount} />
+        <AdminNav pendingCount={pendingCount} isOwner={isOwner} />
         <div className="hidden space-y-1 border-t pt-4 text-sm md:block">
           <Link href="/" target="_blank" className="block rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
             Ver tienda ↗

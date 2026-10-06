@@ -2,6 +2,9 @@
 export const SESSION_COOKIE_NAME = "admin_session";
 export const SESSION_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 días
 
+/** owner: acceso completo · empleado: solo pedidos (ver datos del comprador y marcar despachado) */
+export type AdminRole = "owner" | "empleado";
+
 /**
  * Lee una variable de entorno sin espacios ni comillas alrededor
  * (es fácil pegar `"admin"` con comillas al cargarla en Vercel).
@@ -41,24 +44,37 @@ function timingSafeEqual(a: string, b: string): boolean {
   return result === 0;
 }
 
-export async function createSessionToken(): Promise<string> {
-  const payload = `admin|${Date.now() + SESSION_COOKIE_MAX_AGE * 1000}`;
+export async function createSessionToken(role: AdminRole): Promise<string> {
+  const payload = `${role}|${Date.now() + SESSION_COOKIE_MAX_AGE * 1000}`;
   return `${payload}.${await hmac(payload)}`;
 }
 
-export async function verifySessionToken(token: string | undefined): Promise<boolean> {
-  if (!token) return false;
+/** Devuelve el rol de la sesión, o null si no hay sesión válida. */
+export async function verifySessionToken(token: string | undefined): Promise<AdminRole | null> {
+  if (!token) return null;
   const i = token.lastIndexOf(".");
-  if (i === -1) return false;
+  if (i === -1) return null;
   const payload = token.slice(0, i);
-  if (!timingSafeEqual(token.slice(i + 1), await hmac(payload))) return false;
-  const expiresAt = Number(payload.split("|")[1]);
-  return Number.isFinite(expiresAt) && Date.now() < expiresAt;
+  if (!timingSafeEqual(token.slice(i + 1), await hmac(payload))) return null;
+  const [rawRole, expiresRaw] = payload.split("|");
+  const expiresAt = Number(expiresRaw);
+  if (!Number.isFinite(expiresAt) || Date.now() >= expiresAt) return null;
+  // "admin" es el formato de las sesiones de antes de que existiera el rol empleado
+  if (rawRole === "owner" || rawRole === "admin") return "owner";
+  if (rawRole === "empleado") return "empleado";
+  return null;
 }
 
-export function checkAdminCredentials(username: string, password: string): boolean {
-  const u = env("ADMIN_USERNAME").toLowerCase();
-  const p = env("ADMIN_PASSWORD");
+function matches(username: string, password: string, userVar: string, passVar: string) {
+  const u = env(userVar).toLowerCase();
+  const p = env(passVar);
   // El usuario no distingue mayúsculas (el celular suele poner la primera en mayúscula); la contraseña sí.
   return Boolean(u && p && timingSafeEqual(username.trim().toLowerCase(), u) && timingSafeEqual(password.trim(), p));
+}
+
+/** Devuelve el rol si el usuario y la contraseña coinciden con el admin o con el empleado (opcional). */
+export function checkAdminCredentials(username: string, password: string): AdminRole | null {
+  if (matches(username, password, "ADMIN_USERNAME", "ADMIN_PASSWORD")) return "owner";
+  if (matches(username, password, "EMPLOYEE_USERNAME", "EMPLOYEE_PASSWORD")) return "empleado";
+  return null;
 }

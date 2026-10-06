@@ -3,10 +3,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
-import { ORDER_STATUSES, STATUS_LABELS } from "@/lib/orders";
+import { ORDER_STATUSES, STATUS_LABELS, TO_DISPATCH } from "@/lib/orders";
+import { getAdminRole } from "@/lib/adminSession";
 import { Card, Notice, PageHeader } from "@/components/admin/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
-import { updateOrderStatus } from "../actions";
+import { markDispatched, undoDispatched, updateOrderStatus } from "../actions";
 
 const waLink = (phone: string) => {
   const digits = phone.replace(/\D/g, "");
@@ -17,6 +18,8 @@ export default async function OrderDetailPage({ params, searchParams }: { params
   const order = await prisma.order.findUnique({ where: { id: params.id }, include: { items: true } });
   if (!order) notFound();
   const wa = order.customerPhone ? waLink(order.customerPhone) : null;
+  const isOwner = (await getAdminRole()) === "owner";
+  const canDispatch = TO_DISPATCH.includes(order.status as (typeof TO_DISPATCH)[number]);
 
   return (
     <div className="max-w-3xl">
@@ -86,25 +89,54 @@ export default async function OrderDetailPage({ params, searchParams }: { params
             </dl>
           </Card>
 
-          <Card title="Cambiar estado">
-            <div className="grid grid-cols-2 gap-2">
-              {ORDER_STATUSES.map((s) => (
-                <form key={s} action={updateOrderStatus}>
-                  <input type="hidden" name="id" value={order.id} />
-                  <input type="hidden" name="status" value={s} />
-                  <button
-                    disabled={order.status === s}
-                    className={`w-full rounded-lg px-3 py-2 text-sm font-semibold ${
-                      order.status === s ? "bg-gray-900 text-white" : "bg-white ring-1 ring-black/15 hover:bg-gray-50"
-                    }`}
-                  >
-                    {STATUS_LABELS[s]}
-                  </button>
-                </form>
-              ))}
-            </div>
-            <p className="mt-3 text-xs text-gray-500">Al cancelar, el stock de estos combos vuelve a estar disponible.</p>
+          <Card title="Despacho">
+            {canDispatch ? (
+              <form action={markDispatched}>
+                <input type="hidden" name="id" value={order.id} />
+                <button className="w-full rounded-xl bg-violet-600 px-4 py-3 font-bold text-white hover:bg-violet-700">
+                  📦 Marcar como despachado
+                </button>
+              </form>
+            ) : order.dispatchedAt ? (
+              <div className="space-y-3 text-sm">
+                <p className="rounded-lg bg-violet-50 px-3 py-2 font-medium text-violet-800">
+                  ✓ Despachado el {formatDateTime(order.dispatchedAt)}
+                </p>
+                {order.status === "DESPACHADO" && (
+                  <form action={undoDispatched}>
+                    <input type="hidden" name="id" value={order.id} />
+                    <button className="text-xs text-gray-500 underline hover:text-gray-900">Lo marqué por error, deshacer</button>
+                  </form>
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">
+                {order.status === "CANCELADO" ? "Pedido cancelado, no se despacha." : "Sin datos de despacho."}
+              </p>
+            )}
           </Card>
+
+          {isOwner && (
+            <Card title="Cambiar estado">
+              <div className="grid grid-cols-2 gap-2">
+                {ORDER_STATUSES.map((s) => (
+                  <form key={s} action={updateOrderStatus}>
+                    <input type="hidden" name="id" value={order.id} />
+                    <input type="hidden" name="status" value={s} />
+                    <button
+                      disabled={order.status === s}
+                      className={`w-full rounded-lg px-3 py-2 text-sm font-semibold ${
+                        order.status === s ? "bg-gray-900 text-white" : "bg-white ring-1 ring-black/15 hover:bg-gray-50"
+                      }`}
+                    >
+                      {STATUS_LABELS[s]}
+                    </button>
+                  </form>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-gray-500">Al cancelar, el stock de estos combos vuelve a estar disponible.</p>
+            </Card>
+          )}
         </div>
       </div>
     </div>

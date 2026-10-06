@@ -90,8 +90,10 @@ model Order {
   customerAddress String      @default("")
   notes           String      @default("")
   total           Int
-  /// PENDIENTE | CONFIRMADO | ENTREGADO | CANCELADO
+  /// PENDIENTE | CONFIRMADO | DESPACHADO | ENTREGADO | CANCELADO
   status          String      @default("PENDIENTE")
+  /// Cuándo se marcó como despachado
+  dispatchedAt    DateTime?
   createdAt       DateTime    @default(now())
 
   items OrderItem[]

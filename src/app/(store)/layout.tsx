@@ -6,7 +6,7 @@ import { STORE_NAME } from "@/lib/config";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth";
 
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
-  const isAdmin = await verifySessionToken(cookies().get(SESSION_COOKIE_NAME)?.value).catch(() => false);
+  const isAdmin = Boolean(await verifySessionToken(cookies().get(SESSION_COOKIE_NAME)?.value).catch(() => null));
 
   return (
     <CartProvider>

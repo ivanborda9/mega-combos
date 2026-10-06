@@ -1,12 +1,13 @@
 import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 
-export const ORDER_STATUSES = ["PENDIENTE", "CONFIRMADO", "ENTREGADO", "CANCELADO"] as const;
+export const ORDER_STATUSES = ["PENDIENTE", "CONFIRMADO", "DESPACHADO", "ENTREGADO", "CANCELADO"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export const STATUS_LABELS: Record<OrderStatus, string> = {
   PENDIENTE: "Pendiente",
   CONFIRMADO: "Confirmado",
+  DESPACHADO: "Despachado",
   ENTREGADO: "Entregado",
   CANCELADO: "Cancelado",
 };
@@ -14,9 +15,20 @@ export const STATUS_LABELS: Record<OrderStatus, string> = {
 export const STATUS_STYLES: Record<OrderStatus, string> = {
   PENDIENTE: "bg-amber-100 text-amber-800",
   CONFIRMADO: "bg-blue-100 text-blue-800",
+  DESPACHADO: "bg-violet-100 text-violet-800",
   ENTREGADO: "bg-green-100 text-green-800",
   CANCELADO: "bg-gray-200 text-gray-600",
 };
+
+/** Pedidos que todavía hay que preparar y despachar */
+export const TO_DISPATCH: OrderStatus[] = ["PENDIENTE", "CONFIRMADO"];
+
+/** Fecha de despacho que corresponde al pasar a un estado */
+export function dispatchedAtFor(status: OrderStatus, current: Date | null): Date | null {
+  if (status === "DESPACHADO" || status === "ENTREGADO") return current ?? (status === "DESPACHADO" ? new Date() : null);
+  if (status === "CANCELADO") return current;
+  return null;
+}
 
 export function isOrderStatus(s: string): s is OrderStatus {
   return (ORDER_STATUSES as readonly string[]).includes(s);

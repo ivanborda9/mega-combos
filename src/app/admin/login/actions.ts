@@ -9,16 +9,17 @@ export async function loginAction(formData: FormData) {
   const password = String(formData.get("password") || "");
 
   if (missingAdminEnv().length > 0) redirect("/admin/login");
-  if (!checkAdminCredentials(username, password)) redirect("/admin/login?error=1");
+  const role = checkAdminCredentials(username, password);
+  if (!role) redirect("/admin/login?error=1");
 
-  cookies().set(SESSION_COOKIE_NAME, await createSessionToken(), {
+  cookies().set(SESSION_COOKIE_NAME, await createSessionToken(role), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_COOKIE_MAX_AGE,
   });
-  redirect("/admin");
+  redirect(role === "empleado" ? "/admin/pedidos" : "/admin");
 }
 
 export async function logoutAction() {

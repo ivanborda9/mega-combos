@@ -4,18 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/admin", label: "Resumen", icon: "📊" },
-  { href: "/admin/pedidos", label: "Pedidos", icon: "🧾" },
-  { href: "/admin/combos", label: "Combos", icon: "👕" },
-  { href: "/admin/stock", label: "Stock", icon: "📦" },
-  { href: "/admin/carrusel", label: "Carrusel", icon: "🖼️" },
+  { href: "/admin", label: "Resumen", icon: "📊", staff: false },
+  { href: "/admin/pedidos", label: "Pedidos", icon: "🧾", staff: true },
+  { href: "/admin/combos", label: "Combos", icon: "👕", staff: false },
+  { href: "/admin/stock", label: "Stock", icon: "📦", staff: false },
+  { href: "/admin/carrusel", label: "Carrusel", icon: "🖼️", staff: false },
 ];
 
-export function AdminNav({ pendingCount }: { pendingCount: number }) {
+export function AdminNav({ pendingCount, isOwner }: { pendingCount: number; isOwner: boolean }) {
   const pathname = usePathname();
   return (
     <nav className="-mx-4 flex gap-1 overflow-x-auto px-4 md:mx-0 md:flex-col md:px-0">
-      {LINKS.map((link) => {
+      {LINKS.filter((link) => isOwner || link.staff).map((link) => {
         const active = link.href === "/admin" ? pathname === "/admin" : pathname.startsWith(link.href);
         return (
           <Link
