@@ -18,12 +18,13 @@ export function Card({ title, children, className = "" }: { title?: string; chil
   );
 }
 
-export function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+export function Stat({ label, value, hint, tone = "default" }: { label: string; value: string; hint?: string; tone?: "default" | "red" }) {
+  const red = tone === "red";
   return (
-    <div className="rounded-2xl bg-white p-4 ring-1 ring-black/5">
-      <p className="text-sm text-gray-500">{label}</p>
+    <div className={`h-full rounded-2xl p-4 ${red ? "bg-red-600 text-white" : "bg-white ring-1 ring-black/5"}`}>
+      <p className={`text-sm ${red ? "font-semibold text-red-50" : "text-gray-500"}`}>{label}</p>
       <p className="mt-1 text-2xl font-extrabold tabular-nums">{value}</p>
-      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className={`mt-1 text-xs ${red ? "text-red-100" : "text-gray-500"}`}>{hint}</p>}
     </div>
   );
 }
