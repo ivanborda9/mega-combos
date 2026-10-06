@@ -8,10 +8,10 @@ export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
   const { count } = useCart();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-black/5 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/90 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-500 text-white">MC</span>
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-500 text-lg text-white" aria-hidden>👑</span>
           {STORE_NAME}
         </Link>
         <div className="flex items-center gap-2">

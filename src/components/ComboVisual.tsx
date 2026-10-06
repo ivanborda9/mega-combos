@@ -17,7 +17,7 @@ export function ComboVisual({
     return <img src={imageUrl} alt={name} className={`h-full w-full object-cover ${className}`} />;
   }
   return (
-    <div className={`grid h-full w-full place-items-center bg-gradient-to-br from-brand-100 to-amber-50 ${emojiClassName} ${className}`}>
+    <div className={`grid h-full w-full place-items-center bg-gradient-to-br from-brand-100 via-brand-50 to-rose-50 ${emojiClassName} ${className}`}>
       <span aria-hidden>{emoji}</span>
     </div>
   );

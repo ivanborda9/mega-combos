@@ -10,10 +10,11 @@ export default async function StoreLayout({ children }: { children: React.ReactN
 
   return (
     <CartProvider>
-      <div className="flex min-h-screen flex-col">
+      <div className="store-bg flex min-h-screen flex-col">
         <Navbar isAdmin={isAdmin} />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
-        <footer className="border-t border-black/5 py-6 text-center text-sm text-gray-500">
+        <footer className="border-t border-brand-100 bg-white/70 py-6 text-center text-sm text-gray-500">
+          <p aria-hidden className="mb-2 text-lg tracking-[0.5em]">🌸🌷🌺🌷🌸</p>
           © {new Date().getFullYear()} {STORE_NAME} · Pedidos por WhatsApp ·{" "}
           <Link href="/admin" className="hover:text-gray-900 hover:underline">
             Administración
