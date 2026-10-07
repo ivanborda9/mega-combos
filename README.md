@@ -1,4 +1,4 @@
-# REINAS.STORE
+# REINAS XL
 
 Tienda online de ropa para mujer (remeras, bombachas, tops y
 medias). Los clientes eligen el artículo y el talle, confirman el pedido (queda

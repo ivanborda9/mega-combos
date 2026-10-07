@@ -1,4 +1,4 @@
-export const STORE_NAME = process.env.NEXT_PUBLIC_STORE_NAME || "REINAS.STORE";
+export const STORE_NAME = process.env.NEXT_PUBLIC_STORE_NAME || "REINAS XL";
 
 /** Texto de la franja rosa de avisos que corre arriba de la tienda */
 export const ANNOUNCEMENT = process.env.NEXT_PUBLIC_ANNOUNCEMENT || "🔥 3 CUOTAS SIN INTERÉS 🔥 + ENTREGA RÁPIDA A TODO EL PAÍS";
