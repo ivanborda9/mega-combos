@@ -18,8 +18,7 @@ body {
 .marquee {
   animation: marquee 28s linear infinite;
 }
-@media (prefers-reduced-motion: reduce) {
-  .marquee {
-    animation: none;
-  }
+/* Se frena al pasar el mouse para poder leerla */
+.marquee:hover {
+  animation-play-state: paused;
 }

@@ -7,6 +7,7 @@ import { useCart } from "@/components/CartProvider";
 import { ComboVisual } from "@/components/ComboVisual";
 import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
+import { discountFor, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
 
 const inputClass = "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none";
 
@@ -15,13 +16,16 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
   const { lines, setQuantity, remove, clear } = useCart();
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("TRANSFERENCIA");
 
   const items = lines.flatMap((line) => {
     const combo = combos.find((c) => c.slug === line.slug);
     const stock = combo?.sizes.find((s) => s.size === line.size)?.stock;
     return combo && stock !== undefined ? [{ line, combo, stock }] : [];
   });
-  const total = items.reduce((sum, { line, combo }) => sum + combo.price * line.quantity, 0);
+  const subtotal = items.reduce((sum, { line, combo }) => sum + combo.price * line.quantity, 0);
+  const discount = discountFor(subtotal, paymentMethod);
+  const total = subtotal - discount;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,6 +41,7 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
           customerPhone: form.get("customerPhone"),
           customerAddress: form.get("customerAddress"),
           notes: form.get("notes"),
+          paymentMethod,
           items: items.map(({ line }) => ({ slug: line.slug, size: line.size, quantity: line.quantity })),
         }),
       });
@@ -144,9 +149,38 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
           <span className="font-medium">Nota (opcional)</span>
           <textarea name="notes" rows={2} maxLength={500} className={inputClass} />
         </label>
-        <div className="flex justify-between border-t pt-4 text-xl font-extrabold">
-          <span>Total</span>
-          <span>{formatPrice(total)}</span>
+        <fieldset className="space-y-2 text-sm">
+          <legend className="mb-1 font-medium">Forma de pago</legend>
+          {(Object.keys(PAYMENT_METHODS) as PaymentMethod[]).map((key) => (
+            <label
+              key={key}
+              className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 ${paymentMethod === key ? "border-black" : "border-gray-300"}`}
+            >
+              <input type="radio" name="paymentMethod" value={key} checked={paymentMethod === key} onChange={() => setPaymentMethod(key)} />
+              <span className="flex-1">{PAYMENT_METHODS[key].label}</span>
+              {PAYMENT_METHODS[key].discount && TRANSFER_DISCOUNT_PERCENT > 0 && (
+                <span className="bg-blush-200 px-2 py-0.5 text-xs font-semibold">{TRANSFER_DISCOUNT_PERCENT}% OFF</span>
+              )}
+            </label>
+          ))}
+        </fieldset>
+        <div className="space-y-1 border-t pt-4 text-sm">
+          {discount > 0 && (
+            <>
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span>{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex justify-between font-medium text-green-700">
+                <span>Descuento transferencia ({TRANSFER_DISCOUNT_PERCENT}%)</span>
+                <span>-{formatPrice(discount)}</span>
+              </div>
+            </>
+          )}
+          <div className="flex justify-between text-xl font-extrabold">
+            <span>Total</span>
+            <span>{formatPrice(total)}</span>
+          </div>
         </div>
         {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         <button

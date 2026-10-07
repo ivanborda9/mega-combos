@@ -88,12 +88,14 @@ export async function getDashboardStats(period: Period) {
     byStatus.set(order.status, (byStatus.get(order.status) ?? 0) + 1);
     const key = dayKey(order.createdAt);
     byDay.set(key, (byDay.get(key) ?? 0) + order.total);
+    const gross = order.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const factor = gross > 0 ? order.total / gross : 1;
     for (const item of order.items) {
       totals.units += item.quantity;
       const comboKey = item.comboId ?? item.comboName;
       const c = byCombo.get(comboKey) ?? { name: item.comboName, units: 0, revenue: 0 };
       c.units += item.quantity;
-      c.revenue += item.price * item.quantity;
+      c.revenue += Math.round(item.price * item.quantity * factor);
       byCombo.set(comboKey, c);
       bySize.set(item.size, (bySize.get(item.size) ?? 0) + item.quantity);
     }

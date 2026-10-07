@@ -92,6 +92,13 @@ model Order {
   customerPhone   String      @default("")
   customerAddress String      @default("")
   notes           String      @default("")
+  /// Suma de los artículos antes del descuento (null en pedidos de antes de existir el descuento)
+  subtotal        Int?
+  /// Descuento por forma de pago (ej. 10% por transferencia)
+  discount        Int         @default(0)
+  /// TRANSFERENCIA | OTRO ("" en pedidos viejos)
+  paymentMethod   String      @default("")
+  /// Lo que paga el cliente: subtotal - descuento
   total           Int
   /// PENDIENTE | CONFIRMADO | DESPACHADO | ENTREGADO | CANCELADO
   status          String      @default("PENDIENTE")

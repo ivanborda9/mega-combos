@@ -34,8 +34,11 @@ export async function getProfitStats(period: Period) {
 
   for (const order of orders) {
     const monthKey = dayKey(order.createdAt).slice(0, 7);
+    // Si hubo descuento (ej. transferencia), cada renglón cuenta su parte del total cobrado
+    const gross = order.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const factor = gross > 0 ? order.total / gross : 1;
     for (const item of order.items) {
-      const revenue = item.price * item.quantity;
+      const revenue = Math.round(item.price * item.quantity * factor);
       const unitCost = item.costPrice ?? item.combo?.costPrice ?? null;
       const comboKey = item.comboId ?? item.comboName;
       const category = item.combo?.category ?? "Sin categoría";

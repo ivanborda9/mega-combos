@@ -5,6 +5,7 @@ import { formatDateTime, formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { ORDER_STATUSES, STATUS_LABELS, TO_DISPATCH } from "@/lib/orders";
 import { getAdminRole } from "@/lib/adminSession";
+import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
 import { Card, Notice, PageHeader } from "@/components/admin/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { markDispatched, undoDispatched, updateOrderStatus } from "../actions";
@@ -44,9 +45,24 @@ export default async function OrderDetailPage({ params, searchParams }: { params
               </li>
             ))}
           </ul>
-          <div className="mt-3 flex justify-between border-t pt-3 text-lg font-extrabold">
-            <span>Total</span>
-            <span>{formatPrice(order.total)}</span>
+          <div className="mt-3 space-y-1 border-t pt-3 text-sm">
+            {order.discount > 0 && order.subtotal && (
+              <>
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span className="tabular-nums">{formatPrice(order.subtotal)}</span>
+                </div>
+                <div className="flex justify-between font-medium text-green-700">
+                  <span>Descuento transferencia</span>
+                  <span className="tabular-nums">-{formatPrice(order.discount)}</span>
+                </div>
+              </>
+            )}
+            <div className="flex justify-between text-lg font-extrabold">
+              <span>Total</span>
+              <span>{formatPrice(order.total)}</span>
+            </div>
+            {isPaymentMethod(order.paymentMethod) && <p className="text-gray-600">Pago: {PAYMENT_METHODS[order.paymentMethod].label}</p>}
           </div>
         </Card>
 

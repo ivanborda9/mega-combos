@@ -1,5 +1,6 @@
 import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
+import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
 
 export const ORDER_STATUSES = ["PENDIENTE", "CONFIRMADO", "DESPACHADO", "ENTREGADO", "CANCELADO"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
@@ -40,6 +41,9 @@ type MessageOrder = {
   customerPhone: string;
   customerAddress: string;
   notes: string;
+  subtotal: number | null;
+  discount: number;
+  paymentMethod: string;
   total: number;
   items: { comboName: string; size: string; price: number; quantity: number }[];
 };
@@ -53,7 +57,11 @@ export function orderWhatsappMessage(order: MessageOrder) {
         `• ${i.quantity} x ${i.comboName}${i.size && i.size !== ONE_SIZE ? ` (talle ${i.size})` : ""} — ${formatPrice(i.price * i.quantity)}`,
     ),
     "",
+    ...(order.discount > 0 && order.subtotal
+      ? [`Subtotal: ${formatPrice(order.subtotal)}`, `Descuento por transferencia: -${formatPrice(order.discount)}`]
+      : []),
     `Total: ${formatPrice(order.total)}`,
+    ...(isPaymentMethod(order.paymentMethod) ? [`Forma de pago: ${PAYMENT_METHODS[order.paymentMethod].label}`] : []),
     `Nombre: ${order.customerName}`,
     ...(order.customerPhone ? [`Teléfono: ${order.customerPhone}`] : []),
     ...(order.customerAddress ? [`Dirección / zona: ${order.customerAddress}`] : []),

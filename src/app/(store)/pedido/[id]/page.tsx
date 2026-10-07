@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { orderWhatsappMessage } from "@/lib/orders";
+import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
 import { WHATSAPP_NUMBER, whatsappLink } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
@@ -50,9 +51,24 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
             </li>
           ))}
         </ul>
-        <div className="mt-3 flex justify-between border-t pt-3 text-lg font-extrabold">
-          <span>Total</span>
-          <span>{formatPrice(order.total)}</span>
+        <div className="mt-3 space-y-1 border-t pt-3 text-sm">
+          {order.discount > 0 && order.subtotal && (
+            <>
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span>{formatPrice(order.subtotal)}</span>
+              </div>
+              <div className="flex justify-between font-medium text-green-700">
+                <span>Descuento transferencia</span>
+                <span>-{formatPrice(order.discount)}</span>
+              </div>
+            </>
+          )}
+          <div className="flex justify-between text-lg font-extrabold">
+            <span>Total</span>
+            <span>{formatPrice(order.total)}</span>
+          </div>
+          {isPaymentMethod(order.paymentMethod) && <p className="text-gray-600">Forma de pago: {PAYMENT_METHODS[order.paymentMethod].label}</p>}
         </div>
       </div>
 

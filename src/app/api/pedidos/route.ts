@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { discountFor, isPaymentMethod } from "@/lib/payments";
 
 type Line = { slug: string; size: string; quantity: number };
 
@@ -17,6 +18,8 @@ export async function POST(req: Request) {
 
   const customerName = text(body.customerName, 100);
   if (!customerName) return NextResponse.json({ error: "Falta tu nombre." }, { status: 400 });
+  if (!isPaymentMethod(body.paymentMethod)) return NextResponse.json({ error: "Elegí la forma de pago." }, { status: 400 });
+  const paymentMethod = body.paymentMethod;
 
   // Juntar renglones repetidos y descartar datos raros
   const merged = new Map<string, Line>();
@@ -62,13 +65,18 @@ export async function POST(req: Request) {
         });
       }
 
+      const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+      const discount = discountFor(subtotal, paymentMethod);
       return tx.order.create({
         data: {
           customerName,
           customerPhone: text(body.customerPhone, 40),
           customerAddress: text(body.customerAddress, 200),
           notes: text(body.notes, 500),
-          total: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+          paymentMethod,
+          subtotal,
+          discount,
+          total: subtotal - discount,
           items: { create: items },
         },
       });

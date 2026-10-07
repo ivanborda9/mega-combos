@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { PublicCombo } from "@/lib/combos";
 import { isOneSize, totalStock } from "@/lib/combos";
 import { formatPrice, savingsPercent } from "@/lib/format";
+import { TRANSFER_DISCOUNT_PERCENT, transferPrice } from "@/lib/payments";
 import { AddToCartButton } from "./AddToCartButton";
 import { ComboVisual } from "./ComboVisual";
 
@@ -33,6 +34,11 @@ export function ComboCard({ combo }: { combo: PublicCombo }) {
           {savings > 0 && <span className="text-xs text-gray-500">-{savings}% OFF</span>}
         </p>
         {savings > 0 && <p className="text-xs text-gray-400 line-through">{formatPrice(combo.regularPrice!)}</p>}
+        {TRANSFER_DISCOUNT_PERCENT > 0 && (
+          <p className="text-xs text-gray-900">
+            <span className="text-sm font-bold">{formatPrice(transferPrice(combo.price))}</span> con Transferencia/Depósito
+          </p>
+        )}
         <div className="mt-auto pt-2">
           {outOfStock ? null : isOneSize(combo.sizes) ? (
             <AddToCartButton slug={combo.slug} size={combo.sizes[0].size} compact />
