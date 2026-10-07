@@ -1,5 +1,5 @@
 /** % de descuento por pagar con transferencia o depósito (como en la tienda de Tiendanube) */
-export const TRANSFER_DISCOUNT_PERCENT = Math.min(90, Math.max(0, Number(process.env.NEXT_PUBLIC_TRANSFER_DISCOUNT ?? 10) || 0));
+export const TRANSFER_DISCOUNT_PERCENT = Math.min(90, Math.max(0, Number(process.env.NEXT_PUBLIC_TRANSFER_DISCOUNT ?? 5) || 0));
 
 export const PAYMENT_METHODS = {
   TRANSFERENCIA: { label: "Transferencia / Depósito", discount: true },
