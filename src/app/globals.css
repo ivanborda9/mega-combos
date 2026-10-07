@@ -6,8 +6,20 @@ body {
   @apply bg-gray-50 text-gray-900 antialiased;
 }
 
-/* Fondo de la tienda (no del admin): rosa muy suave con florcitas de 5 pétalos */
-.store-bg {
-  background-color: #fff7fa;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='%23fbcfe8' fill-opacity='0.45'%3E%3Cg transform='translate(18 18)'%3E%3Ccircle cx='0' cy='-4' r='3'/%3E%3Ccircle cx='3.8' cy='-1.2' r='3'/%3E%3Ccircle cx='2.4' cy='3.2' r='3'/%3E%3Ccircle cx='-2.4' cy='3.2' r='3'/%3E%3Ccircle cx='-3.8' cy='-1.2' r='3'/%3E%3C/g%3E%3Cg transform='translate(54 54) scale(.7)'%3E%3Ccircle cx='0' cy='-4' r='3'/%3E%3Ccircle cx='3.8' cy='-1.2' r='3'/%3E%3Ccircle cx='2.4' cy='3.2' r='3'/%3E%3Ccircle cx='-2.4' cy='3.2' r='3'/%3E%3Ccircle cx='-3.8' cy='-1.2' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+/* Franja de avisos que corre de derecha a izquierda */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 28s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    animation: none;
+  }
 }

@@ -5,14 +5,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Rosas: 500 y 600 tienen contraste suficiente con texto blanco (botones)
+        // Como la tienda de Tiendanube: botones gris topo (500 y 600 con contraste
+        // suficiente para texto blanco) y el rosa empolvado de la franja de avisos.
         brand: {
-          50: "#fdf2f8",
-          100: "#fce7f3",
-          200: "#fbcfe8",
-          500: "#db2777",
-          600: "#be185d",
-          700: "#9d174d",
+          50: "#f8f5f3",
+          100: "#efe9e5",
+          200: "#e3d9d3",
+          500: "#736c64",
+          600: "#5c5650",
+          700: "#46413c",
+        },
+        blush: {
+          100: "#f6e9eb",
+          200: "#efdadd",
         },
       },
     },

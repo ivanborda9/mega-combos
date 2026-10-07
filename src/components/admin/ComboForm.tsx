@@ -43,11 +43,12 @@ export function ComboForm({ action, combo }: Props) {
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block text-sm font-medium">
                 Categoría
-                <select name="category" defaultValue={combo?.category ?? CATEGORIES[0]} className={inputClass}>
+                <input name="category" list="categorias" defaultValue={combo?.category ?? CATEGORIES[0]} placeholder="Remeras" className={inputClass} />
+                <datalist id="categorias">
                   {CATEGORIES.map((c) => (
-                    <option key={c}>{c}</option>
+                    <option key={c} value={c} />
                   ))}
-                </select>
+                </datalist>
               </label>
               <label className="block text-sm font-medium">
                 Emoji <span className="font-normal text-gray-500">(si no tiene foto)</span>
@@ -78,7 +79,10 @@ export function ComboForm({ action, combo }: Props) {
               <input type="checkbox" name="active" defaultChecked={combo?.active ?? true} /> Visible en la tienda
             </label>
             <label className="flex items-center gap-2">
-              <input type="checkbox" name="featured" defaultChecked={combo?.featured ?? false} /> Destacado ("Los más pedidos")
+              <input type="checkbox" name="featured" defaultChecked={combo?.featured ?? false} /> Destacado ("Más vendidos")
+            </label>
+            <label className="flex items-center gap-2">
+              <input type="checkbox" name="freeShipping" defaultChecked={combo?.freeShipping ?? false} /> Envío gratis (cartelito en la foto)
             </label>
             <label className="block font-medium">
               Orden <span className="font-normal text-gray-500">(los más bajos van primero)</span>

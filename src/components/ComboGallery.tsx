@@ -11,7 +11,7 @@ export function ComboGallery({ photos, emoji, name }: { photos: string[]; emoji:
 
   if (count === 0) {
     return (
-      <div className="aspect-square overflow-hidden rounded-3xl">
+      <div className="aspect-[3/4] overflow-hidden">
         <ComboVisual imageUrl={null} emoji={emoji} name={name} emojiClassName="text-9xl" />
       </div>
     );
@@ -20,7 +20,7 @@ export function ComboGallery({ photos, emoji, name }: { photos: string[]; emoji:
   return (
     <div className="space-y-3">
       <div
-        className="relative aspect-square overflow-hidden rounded-3xl bg-gray-100"
+        className="relative aspect-[3/4] overflow-hidden bg-gray-100"
         onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
         onTouchEnd={(e) => {
           if (touchX === null || count < 2) return;
@@ -63,7 +63,7 @@ export function ComboGallery({ photos, emoji, name }: { photos: string[]; emoji:
               type="button"
               onClick={() => setIndex(i)}
               aria-label={`Ver foto ${i + 1}`}
-              className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl ring-2 ${i === index ? "ring-gray-900" : "ring-transparent opacity-70 hover:opacity-100"}`}
+              className={`h-20 w-16 shrink-0 overflow-hidden ring-2 ${i === index ? "ring-gray-900" : "ring-transparent opacity-70 hover:opacity-100"}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" className="h-full w-full object-cover" />

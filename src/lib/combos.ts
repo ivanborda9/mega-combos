@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
-export const CATEGORIES = ["Mujer", "Hombre", "Unisex"] as const;
+/** Sugerencias para el campo categoría del admin (se puede escribir cualquier otra) */
+export const CATEGORIES = ["Remeras", "Camisas", "Mujer"];
 export const ONE_SIZE = "Único";
 export const DEFAULT_SIZES = ["S", "M", "L", "XL", "XXL"];
 
@@ -23,6 +24,7 @@ export type PublicCombo = {
   photos: string[];
   emoji: string;
   featured: boolean;
+  freeShipping: boolean;
   sizes: { size: string; stock: number }[];
 };
 
@@ -47,6 +49,7 @@ export function toPublicCombo(c: ComboWithSizes): PublicCombo {
     photos,
     emoji: c.emoji,
     featured: c.featured,
+    freeShipping: c.freeShipping,
     sizes: c.sizes.map((s) => ({ size: s.size, stock: s.stock })),
   };
 }

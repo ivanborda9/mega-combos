@@ -17,11 +17,11 @@ export function AddToCartButton({ slug, size = "", compact = false }: { slug: st
     <button
       type="button"
       onClick={handleClick}
-      className={`rounded-full bg-brand-500 font-semibold text-white transition hover:bg-brand-600 active:scale-95 ${
-        compact ? "w-full px-3 py-2 text-sm sm:w-auto sm:px-4" : "w-full px-6 py-3 text-base"
+      className={`w-full bg-brand-500 font-medium text-white transition hover:bg-brand-600 active:scale-95 ${
+        compact ? "px-3 py-2 text-sm" : "px-6 py-3 text-base uppercase tracking-wider"
       }`}
     >
-      {added ? "¡Agregado!" : compact ? "Agregar" : "Agregar al carrito"}
+      {added ? "¡Agregado!" : compact ? "Comprar" : "Agregar al carrito"}
     </button>
   );
 }

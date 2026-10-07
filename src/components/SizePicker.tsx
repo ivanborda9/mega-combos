@@ -9,7 +9,7 @@ export function SizePicker({ slug, sizes }: { slug: string; sizes: { size: strin
   const available = sizes.filter((s) => s.stock > 0);
 
   if (available.length === 0) {
-    return <p className="rounded-xl bg-gray-100 px-4 py-3 text-center font-semibold text-gray-600">Sin stock por ahora</p>;
+    return <p className="bg-gray-100 px-4 py-3 text-center font-semibold text-gray-600">Sin stock por ahora</p>;
   }
 
   if (sizes.length === 1 && sizes[0].size === ONE_SIZE) {
@@ -23,7 +23,7 @@ export function SizePicker({ slug, sizes }: { slug: string; sizes: { size: strin
 
   return (
     <div className="space-y-3">
-      <p className="font-semibold">Elegí tu talle</p>
+      <p className="text-sm font-semibold uppercase tracking-wide">Talle</p>
       <div className="flex flex-wrap gap-2">
         {sizes.map((s) => {
           const disabled = s.stock <= 0;
@@ -35,12 +35,12 @@ export function SizePicker({ slug, sizes }: { slug: string; sizes: { size: strin
               onClick={() => setSize(s.size)}
               aria-pressed={size === s.size}
               title={disabled ? "Sin stock" : undefined}
-              className={`h-11 min-w-11 rounded-xl px-3 font-semibold transition ${
+              className={`h-11 min-w-11 border px-3 font-medium transition ${
                 disabled
-                  ? "cursor-not-allowed bg-gray-100 text-gray-400 line-through"
+                  ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 line-through"
                   : size === s.size
-                    ? "bg-gray-900 text-white"
-                    : "bg-white ring-1 ring-black/15 hover:ring-gray-900"
+                    ? "border-black bg-black text-white"
+                    : "border-gray-300 bg-white hover:border-black"
               }`}
             >
               {s.size}
@@ -51,7 +51,7 @@ export function SizePicker({ slug, sizes }: { slug: string; sizes: { size: strin
       {size ? (
         <AddToCartButton slug={slug} size={size} />
       ) : (
-        <button type="button" disabled className="w-full cursor-not-allowed rounded-full bg-gray-200 px-6 py-3 font-semibold text-gray-500">
+        <button type="button" disabled className="w-full cursor-not-allowed bg-gray-200 px-6 py-3 text-sm font-medium uppercase tracking-wider text-gray-500">
           Elegí un talle para agregar
         </button>
       )}

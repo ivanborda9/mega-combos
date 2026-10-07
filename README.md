@@ -15,6 +15,9 @@ entrega.
 
 - `/` — carrusel de imágenes, artículos destacados y listado con filtro por categoría
 - `/articulo/[slug]` — qué incluye, precio, ahorro y selector de talle (los talles sin stock no se pueden elegir)
+- `/terminos-y-condiciones`, `/politicas-de-envio`, `/preguntas-frecuentes`,
+  `/politicas-de-devolucion` — páginas de información (textos en
+  `src/lib/infoPages.ts`; aparecen solas en el menú y en el pie)
 - `/carrito` — carrito, datos del cliente y "Confirmar pedido"
 - `/pedido/[id]` — pedido registrado con el botón para enviarlo por WhatsApp
 
@@ -59,9 +62,11 @@ artículos, stock o carrusel, y no puede cancelar pedidos.
    `NEXT_PUBLIC_STORE_NAME`, `ADMIN2_USERNAME` y `ADMIN2_PASSWORD`,
    `EMPLOYEE_USERNAME` y `EMPLOYEE_PASSWORD`
    (ver `.env.example`).
-3. Redeploy. El build crea las tablas y carga 8 artículos de ejemplo para
-   mujer con 10 unidades por talle (si había artículos de ejemplo de una
-   versión anterior, los reemplaza; los creados desde el admin no se tocan).
+3. Redeploy. El build crea las tablas y carga los artículos de la tienda de
+   Tiendanube (CAMISA ALMA, CAPSULA URBAN y CAPSULA AMOR, talles 1 a 7, 10
+   unidades por talle de ejemplo). Si había artículos de ejemplo de una
+   versión anterior, los reemplaza; los creados desde el admin no se tocan.
+   La franja de avisos se puede cambiar con `NEXT_PUBLIC_ANNOUNCEMENT`.
 
 En Vercel, la rama de producción del proyecto es `claude/vercel-page-creation-evf213`.
 

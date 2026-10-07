@@ -30,7 +30,7 @@ export function CategoryFilter({ combos }: { combos: PublicCombo[] }) {
           {categories.map((c) => chip(c, c))}
         </div>
       )}
-      <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
         {visible.map((combo) => (
           <ComboCard key={combo.slug} combo={combo} />
         ))}

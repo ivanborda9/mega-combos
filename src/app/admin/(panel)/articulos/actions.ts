@@ -52,7 +52,7 @@ function parseForm(formData: FormData) {
     slug: slugify(str("slug") || name),
     tagline: str("tagline").slice(0, 200),
     description: str("description").slice(0, 2000),
-    category: (CATEGORIES as readonly string[]).includes(category) ? category : CATEGORIES[0],
+    category: category.slice(0, 40) || CATEGORIES[0],
     items: str("items")
       .split("\n")
       .map((l) => l.trim())
@@ -63,6 +63,7 @@ function parseForm(formData: FormData) {
     costPrice: costPrice || null,
     emoji: str("emoji").slice(0, 8) || "👕",
     featured: formData.get("featured") === "on",
+    freeShipping: formData.get("freeShipping") === "on",
     active: formData.get("active") === "on",
     position: int("position", "Orden") ?? 0,
     sizes,

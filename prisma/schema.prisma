@@ -26,6 +26,7 @@ model Combo {
   imageUrl     String?
   emoji        String      @default("👕")
   featured     Boolean     @default(false)
+  freeShipping Boolean     @default(false)
   active       Boolean     @default(true)
   position     Int         @default(0)
   createdAt    DateTime    @default(now())
