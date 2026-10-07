@@ -19,11 +19,11 @@ export default async function HomePage() {
       {banners.length > 0 ? (
         <BannerCarousel banners={banners} />
       ) : (
-        <section className="bg-blush-100 px-6 py-14 text-center sm:py-20">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-700">Ropa para mujeres reales</p>
-          <h1 className="mx-auto mt-3 max-w-2xl text-4xl font-semibold uppercase tracking-wide sm:text-5xl">{STORE_NAME}</h1>
-          <p className="mx-auto mt-4 max-w-xl text-gray-700">Elegí tus prendas y tu talle, y pedí por WhatsApp. Envíos a todo el país.</p>
-          <a href="#articulos" className="mt-8 inline-block bg-black px-8 py-3 text-sm font-semibold uppercase tracking-wider text-white hover:bg-gray-800">
+        <section className="bg-black px-6 py-12 text-center sm:py-16">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.jpg" alt={STORE_NAME} width={1132} height={405} className="mx-auto w-full max-w-xl" />
+          <p className="mx-auto mt-6 max-w-xl text-white/80">Ropa para mujeres reales. Elegí tus prendas y tu talle, y pedí por WhatsApp. Envíos a todo el país.</p>
+          <a href="#articulos" className="mt-8 inline-block bg-gold-500 px-8 py-3 text-sm font-semibold uppercase tracking-wider text-black hover:bg-gold-400">
             Ver productos
           </a>
         </section>

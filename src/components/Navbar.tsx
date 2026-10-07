@@ -28,9 +28,10 @@ export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
   return (
     <header className="sticky top-0 z-20">
       <div className="bg-black text-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-lg font-semibold uppercase tracking-[0.2em]">
-            {STORE_NAME}
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2.5">
+          <Link href="/" aria-label={`${STORE_NAME} - Inicio`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.jpg" alt={STORE_NAME} width={1132} height={405} className="h-11 w-auto sm:h-14" />
           </Link>
           <div className="flex items-center gap-3">
             {isAdmin && (

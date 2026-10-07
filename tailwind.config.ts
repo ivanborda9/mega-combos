@@ -15,6 +15,11 @@ const config: Config = {
           600: "#5c5650",
           700: "#46413c",
         },
+        // Dorado de la corona y de "MODA FEMENINA" del logo
+        gold: {
+          400: "#d8b26c",
+          500: "#c9a15a",
+        },
         blush: {
           100: "#f6e9eb",
           200: "#efdadd",

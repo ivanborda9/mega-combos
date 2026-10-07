@@ -18,7 +18,8 @@ export default async function StoreLayout({ children }: { children: React.ReactN
         <footer className="bg-black py-10 text-sm text-white/80">
           <div className="mx-auto grid max-w-6xl gap-6 px-4 sm:grid-cols-3">
             <div>
-              <p className="font-semibold uppercase tracking-[0.2em] text-white">{STORE_NAME}</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.jpg" alt={STORE_NAME} width={1132} height={405} className="h-16 w-auto" />
               <p className="mt-2">Ropa para mujeres reales.</p>
             </div>
             <div className="space-y-1">
