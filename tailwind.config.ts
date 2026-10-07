@@ -19,6 +19,7 @@ const config: Config = {
         gold: {
           400: "#d8b26c",
           500: "#c9a15a",
+          700: "#7d5f24", // para texto (contraste suficiente sobre fondo claro)
         },
         blush: {
           100: "#f6e9eb",

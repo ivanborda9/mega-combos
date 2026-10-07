@@ -4,8 +4,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const CATALOG_VERSION = 3; // 1: combos de hombre · 2: combos de mujer · 3: productos de la tienda de Tiendanube
-const SIZES = ["1", "2", "3", "4", "5", "6", "7"];
+const CATALOG_VERSION = 4; // 1: combos de hombre · 2: combos de mujer · 3: productos de Tiendanube · 4: talles 1 al 9
+const SIZES = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 /** Artículos de ejemplo de versiones anteriores, para poder sacarlos al reemplazar el catálogo. */
 const OLD_EXAMPLE_SLUGS = [
@@ -47,6 +47,24 @@ async function main() {
     return;
   }
 
+  // 3 -> 4: los artículos de Tiendanube ya están; solo se suman los talles que falten (8 y 9),
+  // sin tocar fotos, precios ni stock que se hayan cargado desde el admin
+  if (current === 3) {
+    let added = 0;
+    for (const { slug } of combos) {
+      const combo = await prisma.combo.findUnique({ where: { slug }, include: { sizes: true } });
+      if (!combo) continue;
+      for (const [position, size] of SIZES.entries()) {
+        if (combo.sizes.some((s) => s.size === size)) continue;
+        await prisma.comboSize.create({ data: { comboId: combo.id, size, stock: 10, position } });
+        added++;
+      }
+    }
+    await setVersion();
+    console.log(`Se agregaron ${added} talles nuevos (hasta el 9).`);
+    return;
+  }
+
   if (current > 0) {
     const removed = await prisma.combo.deleteMany({ where: { slug: { in: OLD_EXAMPLE_SLUGS } } });
     console.log(`Se sacaron ${removed.count} artículos de ejemplo anteriores (los pedidos viejos conservan nombre y precio).`);
@@ -66,12 +84,16 @@ async function main() {
     created++;
   }
 
+  await setVersion();
+  console.log(`Se cargaron ${created} artículos de la tienda.`);
+}
+
+async function setVersion() {
   await prisma.appMeta.upsert({
     where: { key: "catalogVersion" },
     create: { key: "catalogVersion", value: String(CATALOG_VERSION) },
     update: { value: String(CATALOG_VERSION) },
   });
-  console.log(`Se cargaron ${created} artículos de la tienda.`);
 }
 
 main()

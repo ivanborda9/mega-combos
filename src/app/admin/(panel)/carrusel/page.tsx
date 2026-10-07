@@ -39,7 +39,7 @@ export default async function CarouselPage({ searchParams }: { searchParams: { o
       {searchParams.error && <Notice kind="error">{searchParams.error}</Notice>}
       <p className="mb-6 text-sm text-gray-600">
         Las imágenes pasan solas cada 5 segundos arriba de todo en la tienda. Si no hay ninguna visible, se muestra el cartel naranja.
-        Recomendado: imágenes horizontales de 1600 × 700 px.
+        Recomendado: imágenes horizontales de 1600 × 1000 px (proporción 16:10), como los banners de Tiendanube. Se muestran a todo el ancho y sin recortar.
       </p>
 
       <div className="space-y-4">

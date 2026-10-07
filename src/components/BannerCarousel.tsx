@@ -26,7 +26,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
   const go = (delta: number) => setIndex((i) => (i + delta + count) % count);
 
   return (
-    <div className="relative h-64 w-full overflow-hidden bg-gray-200 sm:h-96">
+    <div className="relative aspect-[16/10] w-full overflow-hidden bg-blush-100">
       {banners.map((banner, i) => {
         const content = (
           <>

@@ -17,7 +17,10 @@ export default async function HomePage() {
   return (
     <div className="space-y-12">
       {banners.length > 0 ? (
-        <BannerCarousel banners={banners} />
+        // A todo el ancho de la pantalla, pegado a la franja de avisos (como en Tiendanube)
+        <div className="-mt-8 mx-[calc(50%-50vw)]">
+          <BannerCarousel banners={banners} />
+        </div>
       ) : (
         <section className="bg-black px-6 py-12 text-center sm:py-16">
           {/* eslint-disable-next-line @next/next/no-img-element */}

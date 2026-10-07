@@ -11,3 +11,8 @@ export function whatsappLink(message: string) {
   const base = WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}` : "https://wa.me/";
   return `${base}?text=${encodeURIComponent(message)}`;
 }
+
+/** Cartel de compra rápida con cuenta regresiva (como en Tiendanube). PROMO_MINUTES=0 lo desactiva. */
+export const PROMO_TITLE = process.env.NEXT_PUBLIC_PROMO_TITLE || "ÚLTIMA SEMANA EN STOCK 🔥";
+export const PROMO_SUBTITLE = process.env.NEXT_PUBLIC_PROMO_SUBTITLE || "IMPERDIBLE!!";
+export const PROMO_MINUTES = Math.max(0, Number(process.env.NEXT_PUBLIC_PROMO_MINUTES ?? 15) || 0);

@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { CartProvider } from "@/components/CartProvider";
 import { Navbar } from "@/components/Navbar";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { PromoCountdown } from "@/components/PromoCountdown";
 import { CONTACT_EMAIL, STORE_NAME, WHATSAPP_DISPLAY, whatsappLink } from "@/lib/config";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth";
 import { INFO_PAGES } from "@/lib/infoPages";
@@ -12,7 +13,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
 
   return (
     <CartProvider>
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-screen flex-col overflow-x-clip bg-white">
         <Navbar isAdmin={isAdmin} />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
         <footer className="bg-black py-10 text-sm text-white/80">
@@ -48,6 +49,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
           </p>
         </footer>
         <WhatsAppFloat />
+        <PromoCountdown />
       </div>
     </CartProvider>
   );
