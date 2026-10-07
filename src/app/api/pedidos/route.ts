@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { discountFor, isPaymentMethod } from "@/lib/payments";
+import { PROVINCES } from "@/lib/orders";
 
 type Line = { slug: string; size: string; quantity: number };
 
@@ -18,6 +19,12 @@ export async function POST(req: Request) {
 
   const customerName = text(body.customerName, 100);
   if (!customerName) return NextResponse.json({ error: "Falta tu nombre." }, { status: 400 });
+  const customerAddress = text(body.customerAddress, 200);
+  const customerCity = text(body.customerCity, 100);
+  const customerProvince = text(body.customerProvince, 40);
+  if (!customerAddress) return NextResponse.json({ error: "Falta la dirección." }, { status: 400 });
+  if (!customerCity) return NextResponse.json({ error: "Falta la localidad." }, { status: 400 });
+  if (!PROVINCES.includes(customerProvince)) return NextResponse.json({ error: "Elegí la provincia." }, { status: 400 });
   if (!isPaymentMethod(body.paymentMethod)) return NextResponse.json({ error: "Elegí la forma de pago." }, { status: 400 });
   const paymentMethod = body.paymentMethod;
 
@@ -71,7 +78,9 @@ export async function POST(req: Request) {
         data: {
           customerName,
           customerPhone: text(body.customerPhone, 40),
-          customerAddress: text(body.customerAddress, 200),
+          customerAddress,
+          customerCity,
+          customerProvince,
           notes: text(body.notes, 500),
           paymentMethod,
           subtotal,

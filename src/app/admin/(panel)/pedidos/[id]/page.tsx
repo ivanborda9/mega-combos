@@ -88,8 +88,14 @@ export default async function OrderDetailPage({ params, searchParams }: { params
               )}
               {order.customerAddress && (
                 <div>
-                  <dt className="text-gray-500">Dirección / zona</dt>
+                  <dt className="text-gray-500">Dirección</dt>
                   <dd className="font-medium">{order.customerAddress}</dd>
+                </div>
+              )}
+              {(order.customerCity || order.customerProvince) && (
+                <div>
+                  <dt className="text-gray-500">Localidad / Provincia</dt>
+                  <dd className="font-medium">{[order.customerCity, order.customerProvince].filter(Boolean).join(", ")}</dd>
                 </div>
               )}
               {order.notes && (

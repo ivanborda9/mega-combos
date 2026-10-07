@@ -7,6 +7,7 @@ import { useCart } from "@/components/CartProvider";
 import { ComboVisual } from "@/components/ComboVisual";
 import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
+import { PROVINCES } from "@/lib/orders";
 import { discountFor, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
 
 const inputClass = "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none";
@@ -40,6 +41,8 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
           customerName: form.get("customerName"),
           customerPhone: form.get("customerPhone"),
           customerAddress: form.get("customerAddress"),
+          customerCity: form.get("customerCity"),
+          customerProvince: form.get("customerProvince"),
           notes: form.get("notes"),
           paymentMethod,
           items: items.map(({ line }) => ({ slug: line.slug, size: line.size, quantity: line.quantity })),
@@ -142,9 +145,26 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
           <input name="customerPhone" type="tel" maxLength={40} className={inputClass} />
         </label>
         <label className="block text-sm">
-          <span className="font-medium">Dirección o zona de entrega</span>
-          <input name="customerAddress" maxLength={200} className={inputClass} />
+          <span className="font-medium">Dirección *</span>
+          <input name="customerAddress" required maxLength={200} autoComplete="street-address" placeholder="Calle, número, piso/depto" className={inputClass} />
         </label>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block text-sm">
+            <span className="font-medium">Localidad *</span>
+            <input name="customerCity" required maxLength={100} autoComplete="address-level2" className={inputClass} />
+          </label>
+          <label className="block text-sm">
+            <span className="font-medium">Provincia *</span>
+            <select name="customerProvince" required defaultValue="" autoComplete="address-level1" className={inputClass}>
+              <option value="" disabled>
+                Elegí…
+              </option>
+              {PROVINCES.map((p) => (
+                <option key={p}>{p}</option>
+              ))}
+            </select>
+          </label>
+        </div>
         <label className="block text-sm">
           <span className="font-medium">Nota (opcional)</span>
           <textarea name="notes" rows={2} maxLength={500} className={inputClass} />

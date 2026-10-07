@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime, formatPrice } from "@/lib/format";
-import { isOrderStatus, ORDER_STATUSES, STATUS_LABELS, TO_DISPATCH } from "@/lib/orders";
+import { fullAddress, isOrderStatus, ORDER_STATUSES, STATUS_LABELS, TO_DISPATCH } from "@/lib/orders";
 import { getAdminRole } from "@/lib/adminSession";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
@@ -26,6 +26,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
       OR: [
         { customerName: { contains: q, mode: "insensitive" as const } },
         { customerPhone: { contains: q } },
+        { customerCity: { contains: q, mode: "insensitive" as const } },
         ...(number ? [{ number }] : []),
       ],
     }),
@@ -73,7 +74,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
           <input
             name="q"
             defaultValue={q}
-            placeholder="Buscar nombre, teléfono o #"
+            placeholder="Buscar nombre, teléfono, localidad o #"
             className="w-56 rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
           />
         </form>
@@ -111,7 +112,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
                     </Link>
                     {o.customerPhone && <p className="text-xs text-gray-500">{o.customerPhone}</p>}
                   </td>
-                  <td className="max-w-[220px] px-4 py-3 text-gray-600">{o.customerAddress || "—"}</td>
+                  <td className="max-w-[220px] px-4 py-3 text-gray-600">{fullAddress(o) || "—"}</td>
                   <td className="px-4 py-3 text-gray-600">{o.items.reduce((s, i) => s + i.quantity, 0)}</td>
                   <td className="px-4 py-3 text-right font-semibold tabular-nums">{formatPrice(o.total)}</td>
                   <td className="px-4 py-3">

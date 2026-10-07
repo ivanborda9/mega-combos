@@ -2,6 +2,38 @@ import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
 
+export const PROVINCES = [
+  "Buenos Aires",
+  "CABA",
+  "Catamarca",
+  "Chaco",
+  "Chubut",
+  "Córdoba",
+  "Corrientes",
+  "Entre Ríos",
+  "Formosa",
+  "Jujuy",
+  "La Pampa",
+  "La Rioja",
+  "Mendoza",
+  "Misiones",
+  "Neuquén",
+  "Río Negro",
+  "Salta",
+  "San Juan",
+  "San Luis",
+  "Santa Cruz",
+  "Santa Fe",
+  "Santiago del Estero",
+  "Tierra del Fuego",
+  "Tucumán",
+];
+
+/** "Av. Siempreviva 742, Olavarría, Buenos Aires" (omite lo que esté vacío) */
+export function fullAddress(o: { customerAddress: string; customerCity?: string; customerProvince?: string }) {
+  return [o.customerAddress, o.customerCity, o.customerProvince].filter(Boolean).join(", ");
+}
+
 export const ORDER_STATUSES = ["PENDIENTE", "CONFIRMADO", "DESPACHADO", "ENTREGADO", "CANCELADO"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
@@ -40,6 +72,8 @@ type MessageOrder = {
   customerName: string;
   customerPhone: string;
   customerAddress: string;
+  customerCity: string;
+  customerProvince: string;
   notes: string;
   subtotal: number | null;
   discount: number;
@@ -64,7 +98,9 @@ export function orderWhatsappMessage(order: MessageOrder) {
     ...(isPaymentMethod(order.paymentMethod) ? [`Forma de pago: ${PAYMENT_METHODS[order.paymentMethod].label}`] : []),
     `Nombre: ${order.customerName}`,
     ...(order.customerPhone ? [`Teléfono: ${order.customerPhone}`] : []),
-    ...(order.customerAddress ? [`Dirección / zona: ${order.customerAddress}`] : []),
+    ...(order.customerAddress ? [`Dirección: ${order.customerAddress}`] : []),
+    ...(order.customerCity ? [`Localidad: ${order.customerCity}`] : []),
+    ...(order.customerProvince ? [`Provincia: ${order.customerProvince}`] : []),
     ...(order.notes ? [`Nota: ${order.notes}`] : []),
   ].join("\n");
 }

@@ -91,6 +91,8 @@ model Order {
   customerName    String
   customerPhone   String      @default("")
   customerAddress String      @default("")
+  customerCity    String      @default("")
+  customerProvince String     @default("")
   notes           String      @default("")
   /// Suma de los artículos antes del descuento (null en pedidos de antes de existir el descuento)
   subtotal        Int?
