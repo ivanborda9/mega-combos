@@ -56,7 +56,8 @@ export async function markDispatched(formData: FormData) {
   await requireStaff();
   const id = String(formData.get("id"));
   await prisma.order.updateMany({
-    where: { id, status: { in: TO_DISPATCH } },
+    // Los de Mercado Pago solo cuando el pago está aprobado
+    where: { id, status: { in: TO_DISPATCH }, NOT: { paymentMethod: "MERCADOPAGO", paymentStatus: { not: "APROBADO" } } },
     data: { status: "DESPACHADO", dispatchedAt: new Date() },
   });
   revalidatePath("/admin", "layout");

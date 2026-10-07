@@ -4,6 +4,7 @@ import { BannerCarousel } from "@/components/BannerCarousel";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { ComboCard } from "@/components/ComboCard";
 import { STORE_NAME } from "@/lib/config";
+import { mpInstallments, mpInterestFree } from "@/lib/mercadopago";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ export default async function HomePage() {
     prisma.banner.findMany({ where: { active: true }, orderBy: [{ position: "asc" }, { createdAt: "asc" }] }),
   ]);
   const featured = combos.filter((c) => c.featured);
+  const installments = { count: mpInstallments(), interestFree: mpInterestFree() };
 
   return (
     <div className="space-y-12">
@@ -37,7 +39,7 @@ export default async function HomePage() {
           <h2 className="mb-5 text-2xl font-semibold uppercase tracking-wide">Más vendidos</h2>
           <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
             {featured.map((combo) => (
-              <ComboCard key={combo.slug} combo={combo} />
+              <ComboCard key={combo.slug} combo={combo} installments={installments} />
             ))}
           </div>
         </section>
@@ -46,7 +48,7 @@ export default async function HomePage() {
       <section id="articulos" className="scroll-mt-40">
         <h2 className="mb-4 text-2xl font-semibold uppercase tracking-wide">Productos</h2>
         {combos.length > 0 ? (
-          <CategoryFilter combos={combos} />
+          <CategoryFilter combos={combos} installments={installments} />
         ) : (
           <p className="rounded-2xl bg-white p-8 text-center text-gray-500 ring-1 ring-black/5">
             Todavía no hay artículos cargados.

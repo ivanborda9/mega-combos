@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { comboPhotoUrls, getComboBySlug } from "@/lib/combos";
 import { formatPrice, savingsPercent } from "@/lib/format";
-import { TRANSFER_DISCOUNT_PERCENT, transferPrice } from "@/lib/payments";
+import { installmentAmount, TRANSFER_DISCOUNT_PERCENT, transferPrice } from "@/lib/payments";
+import { mpInstallments, mpInterestFree } from "@/lib/mercadopago";
 import { SizePicker } from "@/components/SizePicker";
 import { ComboGallery } from "@/components/ComboGallery";
 
@@ -59,6 +60,12 @@ export default async function ComboPage({ params }: Props) {
               <p className="mt-2 text-gray-900">
                 <span className="text-xl font-bold">{formatPrice(transferPrice(combo.price))}</span> con Transferencia/Depósito{" "}
                 <span className="text-sm text-gray-500">({TRANSFER_DISCOUNT_PERCENT}% de descuento)</span>
+              </p>
+            )}
+            {mpInstallments() > 1 && (
+              <p className="mt-1 text-gray-700">
+                💳 {mpInstallments()} x {formatPrice(installmentAmount(combo.price, mpInstallments()))}
+                {mpInterestFree() ? " sin interés" : ""} con Mercado Pago
               </p>
             )}
           </div>

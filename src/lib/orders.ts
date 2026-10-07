@@ -78,6 +78,7 @@ type MessageOrder = {
   subtotal: number | null;
   discount: number;
   paymentMethod: string;
+  paymentStatus?: string;
   total: number;
   items: { comboName: string; size: string; price: number; quantity: number }[];
 };
@@ -96,6 +97,7 @@ export function orderWhatsappMessage(order: MessageOrder) {
       : []),
     `Total: ${formatPrice(order.total)}`,
     ...(isPaymentMethod(order.paymentMethod) ? [`Forma de pago: ${PAYMENT_METHODS[order.paymentMethod].label}`] : []),
+    ...(order.paymentMethod === "MERCADOPAGO" && order.paymentStatus === "APROBADO" ? ["✅ Pago aprobado en Mercado Pago"] : []),
     `Nombre: ${order.customerName}`,
     ...(order.customerPhone ? [`Teléfono: ${order.customerPhone}`] : []),
     ...(order.customerAddress ? [`Dirección: ${order.customerAddress}`] : []),

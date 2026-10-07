@@ -8,11 +8,12 @@ import { ComboVisual } from "@/components/ComboVisual";
 import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
 import { PROVINCES } from "@/lib/orders";
-import { discountFor, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
+import { availableMethods, discountFor, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
 
 const inputClass = "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none";
 
-export function CartView({ combos }: { combos: PublicCombo[] }) {
+/** installments: cuotas máximas con Mercado Pago (0 = Mercado Pago no está configurado) */
+export function CartView({ combos, installments = 0, interestFree = true }: { combos: PublicCombo[]; installments?: number; interestFree?: boolean }) {
   const router = useRouter();
   const { lines, setQuantity, remove, clear } = useCart();
   const [sending, setSending] = useState(false);
@@ -51,6 +52,10 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "No se pudo registrar el pedido.");
       clear();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl; // a pagar en Mercado Pago
+        return;
+      }
       router.push(`/pedido/${data.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo registrar el pedido.");
@@ -171,13 +176,20 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
         </label>
         <fieldset className="space-y-2 text-sm">
           <legend className="mb-1 font-medium">Forma de pago</legend>
-          {(Object.keys(PAYMENT_METHODS) as PaymentMethod[]).map((key) => (
+          {availableMethods(installments > 0).map((key) => (
             <label
               key={key}
               className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 ${paymentMethod === key ? "border-black" : "border-gray-300"}`}
             >
               <input type="radio" name="paymentMethod" value={key} checked={paymentMethod === key} onChange={() => setPaymentMethod(key)} />
-              <span className="flex-1">{PAYMENT_METHODS[key].label}</span>
+              <span className="flex-1">
+                {PAYMENT_METHODS[key].label}
+                {key === "MERCADOPAGO" && installments > 1 && (
+                  <span className="block text-xs text-gray-500">
+                    Hasta {installments} cuotas{interestFree ? " sin interés" : ""}
+                  </span>
+                )}
+              </span>
               {PAYMENT_METHODS[key].discount && TRANSFER_DISCOUNT_PERCENT > 0 && (
                 <span className="bg-blush-200 px-2 py-0.5 text-xs font-semibold">{TRANSFER_DISCOUNT_PERCENT}% OFF</span>
               )}
@@ -208,9 +220,13 @@ export function CartView({ combos }: { combos: PublicCombo[] }) {
           disabled={sending || items.some(({ line, stock }) => line.quantity > stock)}
           className="block w-full rounded-full bg-green-600 px-6 py-3 text-center font-bold text-white hover:bg-green-700 disabled:opacity-50"
         >
-          {sending ? "Registrando pedido…" : "Confirmar pedido"}
+          {sending ? "Registrando pedido…" : paymentMethod === "MERCADOPAGO" ? "Confirmar y pagar con Mercado Pago" : "Confirmar pedido"}
         </button>
-        <p className="text-center text-xs text-gray-500">Después lo enviás por WhatsApp para coordinar pago y entrega.</p>
+        <p className="text-center text-xs text-gray-500">
+          {paymentMethod === "MERCADOPAGO"
+            ? "Te llevamos a Mercado Pago para pagar de forma segura."
+            : "Después lo enviás por WhatsApp para coordinar pago y entrega."}
+        </p>
       </form>
     </div>
   );

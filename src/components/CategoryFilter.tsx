@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import type { PublicCombo } from "@/lib/combos";
-import { ComboCard } from "./ComboCard";
+import { ComboCard, type Installments } from "./ComboCard";
 
-export function CategoryFilter({ combos }: { combos: PublicCombo[] }) {
+export function CategoryFilter({ combos, installments }: { combos: PublicCombo[]; installments?: Installments }) {
   const categories = Array.from(new Set(combos.map((c) => c.category)));
   const [active, setActive] = useState<string | null>(null);
   const visible = active ? combos.filter((c) => c.category === active) : combos;
@@ -32,7 +32,7 @@ export function CategoryFilter({ combos }: { combos: PublicCombo[] }) {
       )}
       <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
         {visible.map((combo) => (
-          <ComboCard key={combo.slug} combo={combo} />
+          <ComboCard key={combo.slug} combo={combo} installments={installments} />
         ))}
       </div>
     </>

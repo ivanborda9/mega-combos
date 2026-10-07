@@ -98,8 +98,12 @@ model Order {
   subtotal        Int?
   /// Descuento por forma de pago (ej. 10% por transferencia)
   discount        Int         @default(0)
-  /// TRANSFERENCIA | OTRO ("" en pedidos viejos)
+  /// TRANSFERENCIA | MERCADOPAGO | OTRO ("" en pedidos viejos)
   paymentMethod   String      @default("")
+  /// Pago con Mercado Pago: PENDIENTE | APROBADO | RECHAZADO ("" si no se paga por Mercado Pago)
+  paymentStatus   String      @default("")
+  mpPreferenceId  String?
+  mpPaymentId     String?
   /// Lo que paga el cliente: subtotal - descuento
   total           Int
   /// PENDIENTE | CONFIRMADO | DESPACHADO | ENTREGADO | CANCELADO

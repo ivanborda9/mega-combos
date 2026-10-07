@@ -5,6 +5,7 @@ import { fullAddress, isOrderStatus, ORDER_STATUSES, STATUS_LABELS, TO_DISPATCH 
 import { getAdminRole } from "@/lib/adminSession";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { PaymentBadge } from "@/components/admin/PaymentBadge";
 import { markDispatched } from "./actions";
 
 const PAGE_SIZE = 50;
@@ -115,11 +116,14 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
                   <td className="max-w-[220px] px-4 py-3 text-gray-600">{fullAddress(o) || "—"}</td>
                   <td className="px-4 py-3 text-gray-600">{o.items.reduce((s, i) => s + i.quantity, 0)}</td>
                   <td className="px-4 py-3 text-right font-semibold tabular-nums">{formatPrice(o.total)}</td>
-                  <td className="px-4 py-3">
+                  <td className="space-y-1 px-4 py-3">
                     <StatusBadge status={o.status} />
+                    <div>
+                      <PaymentBadge method={o.paymentMethod} status={o.paymentStatus} />
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {TO_DISPATCH.includes(o.status as (typeof TO_DISPATCH)[number]) && (
+                    {TO_DISPATCH.includes(o.status as (typeof TO_DISPATCH)[number]) && !(o.paymentMethod === "MERCADOPAGO" && o.paymentStatus !== "APROBADO") && (
                       <form action={markDispatched}>
                         <input type="hidden" name="id" value={o.id} />
                         <button className="whitespace-nowrap rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-violet-700">

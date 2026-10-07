@@ -41,6 +41,20 @@ entrega.
 - **Carrusel**: imágenes de la portada con título, texto y link; ordenar,
   ocultar o eliminar
 
+## Mercado Pago
+
+Con `MERCADOPAGO_ACCESS_TOKEN` el carrito ofrece **Mercado Pago** (Checkout
+Pro, hasta `MERCADOPAGO_INSTALLMENTS` cuotas, 3 por defecto) y los artículos
+muestran "3 x $X sin interés". El pedido se guarda, la clienta paga en
+Mercado Pago y vuelve a la tienda; el pago se confirma al volver y también
+por la notificación de Mercado Pago (`/api/mercadopago/webhook`), siempre
+consultando el pago a la API con nuestro token y verificando que sea por el
+total del pedido. Un pago aprobado pasa el pedido a Confirmado. Los pedidos de
+Mercado Pago sin pagar no se pueden marcar como despachados.
+
+Las cuotas **sin interés** se activan en la cuenta de Mercado Pago (las paga
+el vendedor); si no están activadas, poné `MERCADOPAGO_SIN_INTERES=false`.
+
 ## Segundo admin
 
 Con `ADMIN2_USERNAME` y `ADMIN2_PASSWORD` otra persona entra al admin con sus

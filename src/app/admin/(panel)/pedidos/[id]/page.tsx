@@ -8,6 +8,7 @@ import { getAdminRole } from "@/lib/adminSession";
 import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
 import { Card, Notice, PageHeader } from "@/components/admin/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { PaymentBadge } from "@/components/admin/PaymentBadge";
 import { markDispatched, undoDispatched, updateOrderStatus } from "../actions";
 
 const waLink = (phone: string) => {
@@ -20,7 +21,8 @@ export default async function OrderDetailPage({ params, searchParams }: { params
   if (!order) notFound();
   const wa = order.customerPhone ? waLink(order.customerPhone) : null;
   const isOwner = (await getAdminRole()) === "owner";
-  const canDispatch = TO_DISPATCH.includes(order.status as (typeof TO_DISPATCH)[number]);
+  const unpaidMp = order.paymentMethod === "MERCADOPAGO" && order.paymentStatus !== "APROBADO";
+  const canDispatch = TO_DISPATCH.includes(order.status as (typeof TO_DISPATCH)[number]) && !unpaidMp;
 
   return (
     <div className="max-w-3xl">
@@ -29,6 +31,7 @@ export default async function OrderDetailPage({ params, searchParams }: { params
       </Link>
       <PageHeader title={`Pedido #${order.number}`}>
         <StatusBadge status={order.status} />
+        <PaymentBadge method={order.paymentMethod} status={order.paymentStatus} />
       </PageHeader>
       {searchParams.error && <Notice kind="error">{searchParams.error}</Notice>}
 
@@ -63,6 +66,7 @@ export default async function OrderDetailPage({ params, searchParams }: { params
               <span>{formatPrice(order.total)}</span>
             </div>
             {isPaymentMethod(order.paymentMethod) && <p className="text-gray-600">Pago: {PAYMENT_METHODS[order.paymentMethod].label}</p>}
+            {order.mpPaymentId && <p className="text-xs text-gray-500">N° de operación de Mercado Pago: {order.mpPaymentId}</p>}
           </div>
         </Card>
 
@@ -119,6 +123,10 @@ export default async function OrderDetailPage({ params, searchParams }: { params
                   📦 Marcar como despachado
                 </button>
               </form>
+            ) : unpaidMp && order.status !== "CANCELADO" ? (
+              <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                Esperando el pago de Mercado Pago. Se puede despachar cuando figure como pagado.
+              </p>
             ) : order.dispatchedAt ? (
               <div className="space-y-3 text-sm">
                 <p className="rounded-lg bg-violet-50 px-3 py-2 font-medium text-violet-800">

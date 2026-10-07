@@ -2,13 +2,15 @@ import Link from "next/link";
 import type { PublicCombo } from "@/lib/combos";
 import { isOneSize, totalStock } from "@/lib/combos";
 import { formatPrice, savingsPercent } from "@/lib/format";
-import { TRANSFER_DISCOUNT_PERCENT, transferPrice } from "@/lib/payments";
+import { installmentAmount, TRANSFER_DISCOUNT_PERCENT, transferPrice } from "@/lib/payments";
+
+export type Installments = { count: number; interestFree: boolean };
 import { AddToCartButton } from "./AddToCartButton";
 import { ComboVisual } from "./ComboVisual";
 
 const buttonClass = "block w-full bg-brand-500 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-brand-600";
 
-export function ComboCard({ combo }: { combo: PublicCombo }) {
+export function ComboCard({ combo, installments }: { combo: PublicCombo; installments?: Installments }) {
   const savings = savingsPercent(combo.price, combo.regularPrice);
   const outOfStock = totalStock(combo.sizes) === 0;
 
@@ -37,6 +39,12 @@ export function ComboCard({ combo }: { combo: PublicCombo }) {
         {TRANSFER_DISCOUNT_PERCENT > 0 && (
           <p className="text-xs text-gray-900">
             <span className="text-sm font-bold">{formatPrice(transferPrice(combo.price))}</span> con Transferencia/Depósito
+          </p>
+        )}
+        {installments && installments.count > 1 && (
+          <p className="text-xs text-gray-500">
+            {installments.count} x {formatPrice(installmentAmount(combo.price, installments.count))}
+            {installments.interestFree ? " sin interés" : ""}
           </p>
         )}
         <div className="mt-auto pt-2">

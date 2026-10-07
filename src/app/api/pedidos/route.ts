@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { discountFor, isPaymentMethod } from "@/lib/payments";
+import { createOrderPreference, isMercadoPagoEnabled } from "@/lib/mercadopago";
 import { PROVINCES } from "@/lib/orders";
 
 type Line = { slug: string; size: string; quantity: number };
@@ -27,6 +28,12 @@ export async function POST(req: Request) {
   if (!PROVINCES.includes(customerProvince)) return NextResponse.json({ error: "Elegí la provincia." }, { status: 400 });
   if (!isPaymentMethod(body.paymentMethod)) return NextResponse.json({ error: "Elegí la forma de pago." }, { status: 400 });
   const paymentMethod = body.paymentMethod;
+  if (paymentMethod === "MERCADOPAGO" && !isMercadoPagoEnabled()) {
+    return NextResponse.json({ error: "El pago con Mercado Pago no está disponible ahora. Elegí otra forma de pago." }, { status: 400 });
+  }
+  if (paymentMethod === "OTRO" && isMercadoPagoEnabled()) {
+    return NextResponse.json({ error: "Elegí la forma de pago." }, { status: 400 });
+  }
 
   // Juntar renglones repetidos y descartar datos raros
   const merged = new Map<string, Line>();
@@ -83,13 +90,33 @@ export async function POST(req: Request) {
           customerProvince,
           notes: text(body.notes, 500),
           paymentMethod,
+          paymentStatus: paymentMethod === "MERCADOPAGO" ? "PENDIENTE" : "",
           subtotal,
           discount,
           total: subtotal - discount,
           items: { create: items },
         },
+        include: { items: true },
       });
     });
+
+    if (paymentMethod === "MERCADOPAGO") {
+      try {
+        const { preferenceId, checkoutUrl } = await createOrderPreference({
+          orderId: order.id,
+          orderNumber: order.number,
+          items: order.items.map((i) => ({ title: `${i.comboName} (talle ${i.size})`, quantity: i.quantity, unit_price: i.price })),
+          baseUrl: new URL(req.url).origin,
+          payerName: order.customerName,
+        });
+        await prisma.order.update({ where: { id: order.id }, data: { mpPreferenceId: preferenceId } });
+        return NextResponse.json({ id: order.id, number: order.number, checkoutUrl });
+      } catch (err) {
+        // El pedido ya quedó guardado: desde su página se puede reintentar el pago
+        console.error("No se pudo crear el link de Mercado Pago:", err);
+        return NextResponse.json({ id: order.id, number: order.number, mpError: true });
+      }
+    }
 
     return NextResponse.json({ id: order.id, number: order.number });
   } catch (err) {
