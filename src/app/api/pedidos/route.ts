@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { discountFor, isPaymentMethod, shippingFor } from "@/lib/payments";
 import { createOrderPreference, isMercadoPagoEnabled } from "@/lib/mercadopago";
-import { PROVINCES } from "@/lib/orders";
+import { isDeliveryMethod, PROVINCES } from "@/lib/orders";
 
 type Line = { slug: string; size: string; quantity: number };
 
@@ -28,12 +28,17 @@ export async function POST(req: Request) {
 
   const customerName = text(body.customerName, 100);
   if (!customerName) return NextResponse.json({ error: "Falta tu nombre." }, { status: 400 });
-  const customerAddress = text(body.customerAddress, 200);
-  const customerCity = text(body.customerCity, 100);
-  const customerProvince = text(body.customerProvince, 40);
-  if (!customerAddress) return NextResponse.json({ error: "Falta la dirección." }, { status: 400 });
-  if (!customerCity) return NextResponse.json({ error: "Falta la localidad." }, { status: 400 });
-  if (!PROVINCES.includes(customerProvince)) return NextResponse.json({ error: "Elegí la provincia." }, { status: 400 });
+  const deliveryMethod = isDeliveryMethod(body.deliveryMethod) ? body.deliveryMethod : "ENVIO";
+  const pickup = deliveryMethod === "RETIRO";
+  // Si retira en el local no hace falta dirección
+  const customerAddress = pickup ? "" : text(body.customerAddress, 200);
+  const customerCity = pickup ? "" : text(body.customerCity, 100);
+  const customerProvince = pickup ? "" : text(body.customerProvince, 40);
+  if (!pickup) {
+    if (!customerAddress) return NextResponse.json({ error: "Falta la dirección." }, { status: 400 });
+    if (!customerCity) return NextResponse.json({ error: "Falta la localidad." }, { status: 400 });
+    if (!PROVINCES.includes(customerProvince)) return NextResponse.json({ error: "Elegí la provincia." }, { status: 400 });
+  }
   if (!isPaymentMethod(body.paymentMethod)) return NextResponse.json({ error: "Elegí la forma de pago." }, { status: 400 });
   const paymentMethod = body.paymentMethod;
   if (paymentMethod === "MERCADOPAGO" && !isMercadoPagoEnabled()) {
@@ -91,7 +96,7 @@ export async function POST(req: Request) {
 
       const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
       const discount = discountFor(subtotal, paymentMethod);
-      const shippingCost = shippingFor(shippingRules);
+      const shippingCost = pickup ? 0 : shippingFor(shippingRules);
       return tx.order.create({
         data: {
           customerName,
@@ -99,6 +104,7 @@ export async function POST(req: Request) {
           customerAddress,
           customerCity,
           customerProvince,
+          deliveryMethod,
           notes: text(body.notes, 500),
           paymentMethod,
           paymentStatus: paymentMethod === "MERCADOPAGO" ? "PENDIENTE" : "",

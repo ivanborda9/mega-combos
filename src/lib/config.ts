@@ -20,3 +20,7 @@ export const PROMO_MINUTES = Math.max(0, Number(process.env.NEXT_PUBLIC_PROMO_MI
 /** Datos para transferir (se muestran al elegir transferencia y en el cartel de gracias) */
 export const TRANSFER_ALIAS = process.env.NEXT_PUBLIC_TRANSFER_ALIAS || "REINASXL.WEB";
 export const TRANSFER_HOLDER = process.env.NEXT_PUBLIC_TRANSFER_HOLDER || "Maria Laura Etchevers";
+
+/** Retiro en el local: dirección y horarios que se muestran (si están vacíos, se coordina por WhatsApp) */
+export const PICKUP_ADDRESS = process.env.NEXT_PUBLIC_PICKUP_ADDRESS || "";
+export const PICKUP_HOURS = process.env.NEXT_PUBLIC_PICKUP_HOURS || "";

@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { orderWhatsappMessage } from "@/lib/orders";
 import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
-import { TRANSFER_ALIAS, TRANSFER_HOLDER, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappLink } from "@/lib/config";
+import { PICKUP_ADDRESS, PICKUP_HOURS, TRANSFER_ALIAS, TRANSFER_HOLDER, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappLink } from "@/lib/config";
 import { CopyButton } from "@/components/CopyButton";
 import { isMercadoPagoEnabled } from "@/lib/mercadopago";
 import { syncOrderPayment } from "@/lib/mpSync";
@@ -108,6 +108,21 @@ export default async function OrderPage({ params, searchParams }: Props) {
         <p className="text-center text-xs text-amber-700">
           Falta configurar NEXT_PUBLIC_WHATSAPP_NUMBER en Vercel para que el pedido llegue a tu número.
         </p>
+      )}
+
+      {order.deliveryMethod === "RETIRO" && order.status !== "CANCELADO" && (
+        <section className="rounded-2xl bg-white p-5 text-sm ring-1 ring-black/10">
+          <h2 className="font-bold">🏬 Retiro en local</h2>
+          {PICKUP_ADDRESS ? (
+            <p className="mt-1">
+              Retirás en <b>{PICKUP_ADDRESS}</b>
+              {PICKUP_HOURS && <> · {PICKUP_HOURS}</>}
+            </p>
+          ) : (
+            <p className="mt-1 text-gray-700">Te escribimos por WhatsApp para coordinar el día y el lugar de retiro.</p>
+          )}
+          <p className="mt-1 text-gray-600">Traé tu número de pedido: #{order.number}</p>
+        </section>
       )}
 
       <div className="rounded-2xl bg-white p-5 ring-1 ring-black/5">

@@ -29,8 +29,13 @@ export const PROVINCES = [
   "Tucumán",
 ];
 
-/** "Av. Siempreviva 742, Olavarría, Buenos Aires" (omite lo que esté vacío) */
-export function fullAddress(o: { customerAddress: string; customerCity?: string; customerProvince?: string }) {
+export const DELIVERY_METHODS = { ENVIO: "Envío a domicilio", RETIRO: "Retiro en local" } as const;
+export type DeliveryMethod = keyof typeof DELIVERY_METHODS;
+export const isDeliveryMethod = (v: unknown): v is DeliveryMethod => typeof v === "string" && v in DELIVERY_METHODS;
+
+/** "Av. Siempreviva 742, Olavarría, Buenos Aires" (omite lo que esté vacío); "Retiro en local" si retira */
+export function fullAddress(o: { customerAddress: string; customerCity?: string; customerProvince?: string; deliveryMethod?: string }) {
+  if (o.deliveryMethod === "RETIRO") return "🏬 Retiro en local";
   return [o.customerAddress, o.customerCity, o.customerProvince].filter(Boolean).join(", ");
 }
 
@@ -74,6 +79,7 @@ type MessageOrder = {
   customerAddress: string;
   customerCity: string;
   customerProvince: string;
+  deliveryMethod?: string;
   notes: string;
   subtotal: number | null;
   discount: number;
@@ -102,6 +108,7 @@ export function orderWhatsappMessage(order: MessageOrder) {
     ...(order.paymentMethod === "MERCADOPAGO" && order.paymentStatus === "APROBADO" ? ["✅ Pago aprobado en Mercado Pago"] : []),
     `Nombre: ${order.customerName}`,
     ...(order.customerPhone ? [`Teléfono: ${order.customerPhone}`] : []),
+    ...(order.deliveryMethod === "RETIRO" ? ["Entrega: 🏬 Retiro en local"] : []),
     ...(order.customerAddress ? [`Dirección: ${order.customerAddress}`] : []),
     ...(order.customerCity ? [`Localidad: ${order.customerCity}`] : []),
     ...(order.customerProvince ? [`Provincia: ${order.customerProvince}`] : []),

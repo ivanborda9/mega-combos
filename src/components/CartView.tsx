@@ -7,8 +7,8 @@ import { useCart } from "@/components/CartProvider";
 import { ComboVisual } from "@/components/ComboVisual";
 import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
-import { PROVINCES } from "@/lib/orders";
-import { TRANSFER_ALIAS, TRANSFER_HOLDER } from "@/lib/config";
+import { DELIVERY_METHODS, PROVINCES, type DeliveryMethod } from "@/lib/orders";
+import { PICKUP_ADDRESS, PICKUP_HOURS, TRANSFER_ALIAS, TRANSFER_HOLDER } from "@/lib/config";
 import {
   availableMethods,
   discountFor,
@@ -36,6 +36,8 @@ export function CartView({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("TRANSFERENCIA");
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("ENVIO");
+  const pickup = deliveryMethod === "RETIRO";
 
   const items = lines.flatMap((line) => {
     const combo = combos.find((c) => c.slug === line.slug);
@@ -44,7 +46,7 @@ export function CartView({
   });
   const subtotal = items.reduce((sum, { line, combo }) => sum + combo.price * line.quantity, 0);
   const discount = discountFor(subtotal, paymentMethod);
-  const shipping = shippingFor(items.map(({ combo }) => combo));
+  const shipping = pickup ? 0 : shippingFor(items.map(({ combo }) => combo));
   const total = subtotal - discount + shipping;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -62,6 +64,7 @@ export function CartView({
           customerAddress: form.get("customerAddress"),
           customerCity: form.get("customerCity"),
           customerProvince: form.get("customerProvince"),
+          deliveryMethod,
           notes: form.get("notes"),
           paymentMethod,
           items: items.map(({ line }) => ({ slug: line.slug, size: line.size, quantity: line.quantity })),
@@ -169,34 +172,78 @@ export function CartView({
           <span className="font-medium">Teléfono</span>
           <input name="customerPhone" type="tel" maxLength={40} className={inputClass} />
         </label>
-        <label className="block text-sm">
-          <span className="font-medium">Dirección *</span>
-          <input
-            name="customerAddress"
-            required
-            maxLength={200}
-            autoComplete="street-address"
-            placeholder="Calle, número, piso/depto"
-            className={inputClass}
-          />
-        </label>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="block text-sm">
-            <span className="font-medium">Localidad *</span>
-            <input name="customerCity" required maxLength={100} autoComplete="address-level2" className={inputClass} />
-          </label>
-          <label className="block text-sm">
-            <span className="font-medium">Provincia *</span>
-            <select name="customerProvince" required defaultValue="" autoComplete="address-level1" className={inputClass}>
-              <option value="" disabled>
-                Elegí…
-              </option>
-              {PROVINCES.map((p) => (
-                <option key={p}>{p}</option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <fieldset className="space-y-2 text-sm">
+          <legend className="mb-1 font-medium">Entrega</legend>
+          {(Object.keys(DELIVERY_METHODS) as DeliveryMethod[]).map((key) => (
+            <label
+              key={key}
+              className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 ${deliveryMethod === key ? "border-black" : "border-gray-300"}`}
+            >
+              <input
+                type="radio"
+                name="deliveryMethod"
+                value={key}
+                checked={deliveryMethod === key}
+                onChange={() => setDeliveryMethod(key)}
+              />
+              <span className="flex-1">
+                {key === "ENVIO" ? "🚚 " : "🏬 "}
+                {DELIVERY_METHODS[key]}
+                <span className="block text-xs text-gray-500">
+                  {key === "ENVIO"
+                    ? "Por Andreani a todo el país"
+                    : PICKUP_ADDRESS
+                      ? PICKUP_ADDRESS
+                      : "Te pasamos la dirección por WhatsApp"}
+                </span>
+              </span>
+              {key === "RETIRO" && <span className="text-xs font-semibold text-green-700">Sin costo</span>}
+            </label>
+          ))}
+          {pickup && (PICKUP_HOURS || PICKUP_ADDRESS) && (
+            <p className="bg-blush-100 px-3 py-2 text-xs text-gray-800">
+              {PICKUP_ADDRESS && (
+                <>
+                  Retirás en: <b>{PICKUP_ADDRESS}</b>
+                </>
+              )}
+              {PICKUP_ADDRESS && PICKUP_HOURS && <br />}
+              {PICKUP_HOURS && <>Horarios: {PICKUP_HOURS}</>}
+            </p>
+          )}
+        </fieldset>
+        {!pickup && (
+          <>
+            <label className="block text-sm">
+              <span className="font-medium">Dirección *</span>
+              <input
+                name="customerAddress"
+                required
+                maxLength={200}
+                autoComplete="street-address"
+                placeholder="Calle, número, piso/depto"
+                className={inputClass}
+              />
+            </label>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block text-sm">
+                <span className="font-medium">Localidad *</span>
+                <input name="customerCity" required maxLength={100} autoComplete="address-level2" className={inputClass} />
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium">Provincia *</span>
+                <select name="customerProvince" required defaultValue="" autoComplete="address-level1" className={inputClass}>
+                  <option value="" disabled>
+                    Elegí…
+                  </option>
+                  {PROVINCES.map((p) => (
+                    <option key={p}>{p}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </>
+        )}
         <label className="block text-sm">
           <span className="font-medium">Nota (opcional)</span>
           <textarea name="notes" rows={2} maxLength={500} className={inputClass} />
@@ -251,9 +298,9 @@ export function CartView({
             </div>
           )}
           <div className="flex justify-between text-gray-600">
-            <span>Envío</span>
+            <span>{pickup ? "Retiro en local" : "Envío"}</span>
             <span className={shipping === 0 ? "font-semibold text-green-700" : ""}>
-              {shipping === 0 ? "Gratis" : formatPrice(shipping)}
+              {pickup ? "Sin costo" : shipping === 0 ? "Gratis" : formatPrice(shipping)}
             </span>
           </div>
           <div className="flex justify-between text-xl font-extrabold">
