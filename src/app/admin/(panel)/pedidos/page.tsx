@@ -160,7 +160,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
           <summary className="cursor-pointer font-semibold text-red-700">Borrar todos los pedidos (por ejemplo, los de prueba)</summary>
           <form action={deleteAllOrders} className="mt-4 space-y-3 text-sm">
             <p className="text-gray-700">
-              Se borran <b>todos</b> los pedidos y sus datos, y no se puede deshacer. Las ventas, ganancias y el 25% vuelven a cero, y el
+              Se borran <b>todos</b> los pedidos y sus datos, y no se puede deshacer. Las ventas, ganancias y el 20% vuelven a cero, y el
               próximo pedido va a ser el #1.
             </p>
             <label className="flex items-start gap-2">

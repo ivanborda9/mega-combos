@@ -186,7 +186,7 @@ export default async function OrderDetailPage({ params, searchParams }: { params
         <section className="mt-8 max-w-xl rounded-2xl border border-red-200 bg-white p-5">
           <h2 className="font-bold text-red-700">Eliminar pedido</h2>
           <p className="mt-1 text-sm text-gray-600">
-            Se borra este pedido y no queda registrado en ventas, ganancias ni en el 25%. No se puede deshacer.
+            Se borra este pedido y no queda registrado en ventas, ganancias ni en el 20%. No se puede deshacer.
           </p>
           <form action={deleteOrder} className="mt-3 space-y-3 text-sm">
             <input type="hidden" name="id" value={order.id} />

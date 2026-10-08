@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { dayKey, type Period } from "@/lib/stats";
 
 /** Porcentaje fijo sobre la ganancia. Se cambia solo acá, en el código: no hay forma de editarlo desde el admin. */
-export const PROFIT_SHARE_PERCENT = 25;
+export const PROFIT_SHARE_PERCENT = 20;
 
 const shareOf = (profit: number) => Math.round((Math.max(0, profit) * PROFIT_SHARE_PERCENT) / 100);
 
