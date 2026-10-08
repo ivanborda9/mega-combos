@@ -85,9 +85,3 @@ export async function getProfitStats(period: Period) {
       .map(([key, row]) => ({ ...row, label: `${MONTHS[Number(key.slice(5, 7)) - 1]} ${key.slice(0, 4)}` })),
   };
 }
-
-/** El % fijo sobre la ganancia de todas las ventas (desde el primer pedido, sin cancelados): tarjeta roja del Resumen */
-export async function getProfitShare() {
-  const { total } = await getProfitStats("todo");
-  return { percent: PROFIT_SHARE_PERCENT, profit: total.profit, amount: shareOf(total.profit), revenueWithoutCost: total.revenueWithoutCost };
-}

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getDashboardStats, parsePeriod, PERIODS } from "@/lib/stats";
-import { getProfitShare } from "@/lib/profits";
 import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { STATUS_LABELS, ORDER_STATUSES } from "@/lib/orders";
@@ -9,7 +8,7 @@ import { DailySalesChart, RankBars } from "@/components/admin/DailySalesChart";
 
 export default async function AdminDashboard({ searchParams }: { searchParams: { periodo?: string } }) {
   const period = parsePeriod(searchParams.periodo);
-  const [stats, share] = await Promise.all([getDashboardStats(period), getProfitShare()]);
+  const stats = await getDashboardStats(period);
 
   return (
     <div className="space-y-6">
@@ -27,13 +26,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: {
         ))}
       </PageHeader>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <Stat
-          tone="red"
-          label={`Porcentaje ${share.percent}%`}
-          value={formatPrice(share.amount)}
-          hint={`${share.percent}% de ${formatPrice(share.profit)} de ganancia (todas las ventas)${share.revenueWithoutCost > 0 ? " · hay artículos sin costo cargado" : ""}`}
-        />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Ventas de hoy" value={formatPrice(stats.todayTotals.revenue)} hint={`${stats.todayTotals.orders} pedidos`} />
         <Stat label="Ventas del mes" value={formatPrice(stats.monthTotals.revenue)} hint={`${stats.monthTotals.orders} pedidos`} />
         <Link href="/admin/pedidos?estado=PENDIENTE" className="block">
