@@ -165,3 +165,10 @@ export async function updateComboPrice(id: string, rawPrice: string): Promise<{ 
   refresh();
   return { price };
 }
+
+/** Tilde de "Envío gratis" desde el listado de artículos */
+export async function setFreeShipping(id: string, freeShipping: boolean) {
+  await requireAdmin();
+  await prisma.combo.update({ where: { id }, data: { freeShipping } });
+  refresh();
+}

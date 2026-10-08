@@ -69,7 +69,7 @@ export default async function ComboPage({ params }: Props) {
               </p>
             )}
           </div>
-          {combo.freeShipping && <p className="w-fit bg-blush-200 px-3 py-1.5 text-sm font-medium">🚚 Envío gratis</p>}
+          {combo.freeShipping && <p className="w-fit bg-green-700 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white">🚚 Envío gratis</p>}
           <SizePicker slug={combo.slug} sizes={combo.sizes.map((s) => ({ size: s.size, stock: s.stock }))} />
         </div>
       </div>

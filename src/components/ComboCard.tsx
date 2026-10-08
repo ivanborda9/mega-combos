@@ -19,7 +19,7 @@ export function ComboCard({ combo, installments }: { combo: PublicCombo; install
       <Link href={`/articulo/${combo.slug}`} className="relative block aspect-[3/4] overflow-hidden bg-gray-100">
         <ComboVisual imageUrl={combo.imageUrl} emoji={combo.emoji} name={combo.name} className="transition duration-300 group-hover:scale-105" />
         {combo.freeShipping && (
-          <span className="absolute left-0 top-0 bg-blush-200 px-1.5 py-2 text-[10px] font-medium text-gray-900 [writing-mode:vertical-rl] [transform:rotate(180deg)] sm:text-xs">
+          <span className="absolute left-0 top-0 bg-green-700 px-1.5 py-2 text-[10px] font-semibold text-white [writing-mode:vertical-rl] [transform:rotate(180deg)] sm:text-xs">
             Envío gratis
           </span>
         )}
@@ -36,6 +36,7 @@ export function ComboCard({ combo, installments }: { combo: PublicCombo; install
           {savings > 0 && <span className="text-xs text-gray-500">-{savings}% OFF</span>}
         </p>
         {savings > 0 && <p className="text-xs text-gray-400 line-through">{formatPrice(combo.regularPrice!)}</p>}
+        {combo.freeShipping && <p className="text-xs font-bold uppercase tracking-wide text-green-700">🚚 Envío gratis</p>}
         {TRANSFER_DISCOUNT_PERCENT > 0 && (
           <p className="text-xs text-gray-900">
             <span className="text-sm font-bold">{formatPrice(transferPrice(combo.price))}</span> con Transferencia/Depósito

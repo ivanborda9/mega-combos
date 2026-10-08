@@ -6,6 +6,7 @@ import { comboPhotoUrls, isOneSize, totalStock } from "@/lib/combos";
 import { Card, Notice, PageHeader, buttonClass } from "@/components/admin/ui";
 import { ComboVisual } from "@/components/ComboVisual";
 import { InlinePriceInput } from "@/components/admin/InlinePriceInput";
+import { FreeShippingToggle } from "@/components/admin/FreeShippingToggle";
 import { toggleComboActive } from "./actions";
 
 export default async function CombosAdminPage({ searchParams }: { searchParams: { ok?: string } }) {
@@ -27,7 +28,7 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
         {combos.length === 0 ? (
           <p className="p-6 text-sm text-gray-500">Todavía no cargaste artículos.</p>
         ) : (
-          <table className="w-full min-w-[820px] text-sm">
+          <table className="w-full min-w-[940px] text-sm">
             <thead className="border-b text-left text-gray-500">
               <tr>
                 <th className="px-4 py-3 font-medium">Artículo</th>
@@ -35,6 +36,7 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                 <th className="px-4 py-3 text-right font-medium">Precio</th>
                 <th className="px-4 py-3 text-right font-medium">Ganancia</th>
                 <th className="px-4 py-3 font-medium">Stock</th>
+                <th className="px-4 py-3 font-medium">Envío gratis</th>
                 <th className="px-4 py-3 font-medium">Estado</th>
                 <th />
               </tr>
@@ -75,6 +77,9 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                       {!isOneSize(c.sizes) && (
                         <span className="ml-2 text-xs text-gray-500">{c.sizes.map((s) => `${s.size}:${s.stock}`).join(" ")}</span>
                       )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <FreeShippingToggle id={c.id} initial={c.freeShipping} />
                     </td>
                     <td className="px-4 py-3">
                       <form action={toggleComboActive}>
