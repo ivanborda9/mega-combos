@@ -12,7 +12,7 @@ import { Notice } from "@/components/admin/ui";
 
 const PAGE_SIZE = 50;
 
-export default async function OrdersPage({ searchParams }: { searchParams: { estado?: string; q?: string; pagina?: string; reset?: string } }) {
+export default async function OrdersPage({ searchParams }: { searchParams: { estado?: string; q?: string; pagina?: string; reset?: string; eliminado?: string } }) {
   const isOwner = (await getAdminRole()) === "owner";
   // "despachar" = pendientes + confirmados; el empleado entra directo ahí
   const estado = searchParams.estado ?? (isOwner ? undefined : "despachar");
@@ -56,6 +56,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
   return (
     <div>
       <PageHeader title="Pedidos" />
+      {searchParams.eliminado && <Notice kind="ok">Se eliminó el pedido #{searchParams.eliminado}.</Notice>}
       {searchParams.reset === "confirmar" && <Notice kind="error">No se borró nada: tenés que escribir BORRAR para confirmar.</Notice>}
       {searchParams.reset && /^\d+$/.test(searchParams.reset) && (
         <Notice kind="ok">Listo: se borraron {searchParams.reset} pedidos. El próximo pedido va a ser el #1.</Notice>

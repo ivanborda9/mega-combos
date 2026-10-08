@@ -9,7 +9,8 @@ import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
 import { Card, Notice, PageHeader } from "@/components/admin/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { PaymentBadge } from "@/components/admin/PaymentBadge";
-import { markDispatched, undoDispatched, updateOrderStatus } from "../actions";
+import { deleteOrder, markDispatched, undoDispatched, updateOrderStatus } from "../actions";
+import { ConfirmButton } from "@/components/admin/ConfirmButton";
 
 const waLink = (phone: string) => {
   const digits = phone.replace(/\D/g, "");
@@ -177,6 +178,29 @@ export default async function OrderDetailPage({ params, searchParams }: { params
           )}
         </div>
       </div>
+      {isOwner && (
+        <section className="mt-8 max-w-xl rounded-2xl border border-red-200 bg-white p-5">
+          <h2 className="font-bold text-red-700">Eliminar pedido</h2>
+          <p className="mt-1 text-sm text-gray-600">
+            Se borra este pedido y no queda registrado en ventas, ganancias ni en el 20%. No se puede deshacer.
+          </p>
+          <form action={deleteOrder} className="mt-3 space-y-3 text-sm">
+            <input type="hidden" name="id" value={order.id} />
+            {order.status !== "CANCELADO" && (
+              <label className="flex items-start gap-2">
+                <input type="checkbox" name="restoreStock" defaultChecked className="mt-0.5" />
+                <span>Devolver al stock los artículos de este pedido</span>
+              </label>
+            )}
+            <ConfirmButton
+              message={`¿Eliminar el pedido #${order.number}? No se puede deshacer.`}
+              className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+            >
+              Eliminar pedido #{order.number}
+            </ConfirmButton>
+          </form>
+        </section>
+      )}
     </div>
   );
 }

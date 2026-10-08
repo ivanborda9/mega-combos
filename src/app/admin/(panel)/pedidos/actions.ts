@@ -108,3 +108,29 @@ export async function deleteAllOrders(formData: FormData) {
   revalidatePath("/", "layout");
   redirect(`/admin/pedidos?reset=${deleted}`);
 }
+
+/** Borra un pedido (solo el dueño). Si no estaba cancelado, puede devolver su stock. */
+export async function deleteOrder(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id"));
+  const restoreStock = formData.get("restoreStock") === "on";
+
+  const number = await prisma.$transaction(async (tx) => {
+    const order = await tx.order.findUnique({ where: { id }, include: { items: true } });
+    if (!order) return null;
+    if (restoreStock && order.status !== "CANCELADO") {
+      for (const item of order.items) {
+        if (!item.comboId) continue;
+        await tx.comboSize.updateMany({
+          where: { comboId: item.comboId, size: item.size },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+    }
+    await tx.order.delete({ where: { id } }); // los renglones se borran en cascada
+    return order.number;
+  });
+
+  revalidatePath("/", "layout");
+  redirect(number ? `/admin/pedidos?eliminado=${number}` : "/admin/pedidos");
+}
