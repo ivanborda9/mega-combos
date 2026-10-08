@@ -39,6 +39,10 @@ export async function POST(req: Request) {
     if (!customerCity) return NextResponse.json({ error: "Falta la localidad." }, { status: 400 });
     if (!PROVINCES.includes(customerProvince)) return NextResponse.json({ error: "Elegí la provincia." }, { status: 400 });
   }
+  const customerPhone = text(body.customerPhone, 40);
+  if (customerPhone.replace(/\D/g, "").length < 8) {
+    return NextResponse.json({ error: "Falta tu teléfono (con código de área)." }, { status: 400 });
+  }
   if (!isPaymentMethod(body.paymentMethod)) return NextResponse.json({ error: "Elegí la forma de pago." }, { status: 400 });
   const paymentMethod = body.paymentMethod;
   if (paymentMethod === "MERCADOPAGO" && !isMercadoPagoEnabled()) {
@@ -100,7 +104,7 @@ export async function POST(req: Request) {
       return tx.order.create({
         data: {
           customerName,
-          customerPhone: text(body.customerPhone, 40),
+          customerPhone,
           customerAddress,
           customerCity,
           customerProvince,

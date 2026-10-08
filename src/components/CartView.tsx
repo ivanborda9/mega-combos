@@ -169,8 +169,19 @@ export function CartView({
           <input name="customerName" required maxLength={100} className={inputClass} />
         </label>
         <label className="block text-sm">
-          <span className="font-medium">Teléfono</span>
-          <input name="customerPhone" type="tel" maxLength={40} className={inputClass} />
+          <span className="font-medium">Teléfono / WhatsApp *</span>
+          <input
+            name="customerPhone"
+            type="tel"
+            required
+            maxLength={40}
+            autoComplete="tel"
+            inputMode="tel"
+            pattern="(?:\D*\d){8,}\D*"
+            title="Poné tu número con código de área (al menos 8 números)"
+            placeholder="Ej. 2281 583030"
+            className={inputClass}
+          />
         </label>
         <fieldset className="space-y-2 text-sm">
           <legend className="mb-1 font-medium">Entrega</legend>
