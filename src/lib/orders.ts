@@ -108,7 +108,7 @@ export function orderWhatsappMessage(order: MessageOrder) {
     ...(order.paymentMethod === "MERCADOPAGO" && order.paymentStatus === "APROBADO" ? ["✅ Pago aprobado en Mercado Pago"] : []),
     `Nombre: ${order.customerName}`,
     ...(order.customerPhone ? [`Teléfono: ${order.customerPhone}`] : []),
-    ...(order.deliveryMethod === "RETIRO" ? ["Entrega: 🏬 Retiro en local"] : []),
+    ...(order.deliveryMethod === "RETIRO" ? ["Entrega: 🏬 Retiro en local (listo en las próximas 24 horas)"] : []),
     ...(order.customerAddress ? [`Dirección: ${order.customerAddress}`] : []),
     ...(order.customerCity ? [`Localidad: ${order.customerCity}`] : []),
     ...(order.customerProvince ? [`Provincia: ${order.customerProvince}`] : []),

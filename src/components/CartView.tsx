@@ -211,6 +211,11 @@ export function CartView({
               {key === "RETIRO" && <span className="text-xs font-semibold text-green-700">Sin costo</span>}
             </label>
           ))}
+          {pickup && (
+            <p className="bg-green-50 px-3 py-2 text-xs font-semibold text-green-800">
+              ⏱️ Tu pedido estará listo para retirar en las próximas 24 horas
+            </p>
+          )}
           {pickup && (PICKUP_HOURS || PICKUP_ADDRESS) && (
             <p className="bg-blush-100 px-3 py-2 text-xs text-gray-800">
               {PICKUP_ADDRESS && (

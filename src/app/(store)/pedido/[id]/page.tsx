@@ -113,6 +113,9 @@ export default async function OrderPage({ params, searchParams }: Props) {
       {order.deliveryMethod === "RETIRO" && order.status !== "CANCELADO" && (
         <section className="rounded-2xl bg-white p-5 text-sm ring-1 ring-black/10">
           <h2 className="font-bold">🏬 Retiro en local</h2>
+          <p className="mt-2 bg-green-700 px-4 py-3 text-center text-base font-bold text-white">
+            Tu pedido estará listo para retirar en las próximas 24 horas
+          </p>
           {PICKUP_ADDRESS ? (
             <p className="mt-1">
               Retirás en <b>{PICKUP_ADDRESS}</b>
