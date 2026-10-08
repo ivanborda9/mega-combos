@@ -16,3 +16,7 @@ export function whatsappLink(message: string) {
 export const PROMO_TITLE = process.env.NEXT_PUBLIC_PROMO_TITLE || "ÚLTIMA SEMANA EN STOCK 🔥";
 export const PROMO_SUBTITLE = process.env.NEXT_PUBLIC_PROMO_SUBTITLE || "IMPERDIBLE!!";
 export const PROMO_MINUTES = Math.max(0, Number(process.env.NEXT_PUBLIC_PROMO_MINUTES ?? 15) || 0);
+
+/** Datos para transferir (se muestran al elegir transferencia y en el cartel de gracias) */
+export const TRANSFER_ALIAS = process.env.NEXT_PUBLIC_TRANSFER_ALIAS || "REINASXL.WEB";
+export const TRANSFER_HOLDER = process.env.NEXT_PUBLIC_TRANSFER_HOLDER || "Maria Laura Etchevers";

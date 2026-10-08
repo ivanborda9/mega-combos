@@ -8,6 +8,7 @@ import { ComboVisual } from "@/components/ComboVisual";
 import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
 import { PROVINCES } from "@/lib/orders";
+import { TRANSFER_ALIAS, TRANSFER_HOLDER } from "@/lib/config";
 import { availableMethods, discountFor, installmentAmount, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
 
 const inputClass = "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none";
@@ -195,6 +196,13 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
               )}
             </label>
           ))}
+          {paymentMethod === "TRANSFERENCIA" && (
+            <p className="bg-blush-100 px-3 py-2 text-xs text-gray-800">
+              Alias: <b>{TRANSFER_ALIAS}</b> · Titular: <b>{TRANSFER_HOLDER}</b>
+              <br />
+              Al confirmar te mostramos los datos para enviarnos el comprobante.
+            </p>
+          )}
         </fieldset>
         <div className="space-y-1 border-t pt-4 text-sm">
           {discount > 0 && (

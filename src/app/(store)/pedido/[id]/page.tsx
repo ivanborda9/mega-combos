@@ -5,7 +5,8 @@ import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { orderWhatsappMessage } from "@/lib/orders";
 import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
-import { WHATSAPP_NUMBER, whatsappLink } from "@/lib/config";
+import { TRANSFER_ALIAS, TRANSFER_HOLDER, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappLink } from "@/lib/config";
+import { CopyButton } from "@/components/CopyButton";
 import { isMercadoPagoEnabled } from "@/lib/mercadopago";
 import { syncOrderPayment } from "@/lib/mpSync";
 import { PayWithMercadoPago } from "@/components/PayWithMercadoPago";
@@ -30,10 +31,12 @@ export default async function OrderPage({ params, searchParams }: Props) {
   const inProcess = isMp && !paid && (searchParams.status === "in_process" || searchParams.status === "pending");
   const rejected = isMp && order.paymentStatus === "RECHAZADO";
   const canPay = isMp && !paid && order.status !== "CANCELADO";
+  const isTransfer = order.paymentMethod === "TRANSFERENCIA";
+  const transferMessage = `${orderWhatsappMessage(order)}\n\nTe envío el comprobante de la transferencia 👇`;
 
   return (
     <div className="mx-auto max-w-lg space-y-6 py-6">
-      <div className="text-center">
+      <div className={`text-center ${isTransfer && order.status !== "CANCELADO" ? "hidden" : ""}`}>
         <p className="text-6xl">{paid ? "🎉" : rejected ? "😕" : isMp ? "🛍️" : "🎉"}</p>
         <h1 className="mt-3 text-3xl font-extrabold">
           {paid ? `¡Pago aprobado! Pedido #${order.number}` : rejected ? "El pago no se aprobó" : `¡Pedido #${order.number} registrado!`}
@@ -51,18 +54,56 @@ export default async function OrderPage({ params, searchParams }: Props) {
         </p>
       </div>
 
+      {isTransfer && order.status !== "CANCELADO" && (
+        <section className="border-2 border-gold-500 bg-blush-100 p-6 text-center">
+          <p className="text-3xl" aria-hidden>
+            💖
+          </p>
+          <h2 className="mt-2 text-2xl font-extrabold">¡Gracias por tu compra!</h2>
+          <p className="mt-2 text-lg">
+            Envianos el comprobante de transferencia al <b className="whitespace-nowrap">{WHATSAPP_DISPLAY}</b>
+          </p>
+          <div className="mt-4 space-y-2 bg-white p-4 text-left text-sm ring-1 ring-black/10">
+            <div className="flex items-center justify-between gap-3">
+              <span>
+                <span className="block text-xs uppercase tracking-wide text-gray-500">Alias</span>
+                <b className="text-lg tracking-wide">{TRANSFER_ALIAS}</b>
+              </span>
+              <CopyButton text={TRANSFER_ALIAS} label="Copiar alias" />
+            </div>
+            <p>
+              <span className="text-gray-500">Titular:</span> <b>{TRANSFER_HOLDER}</b>
+            </p>
+            <p>
+              <span className="text-gray-500">Total a transferir:</span> <b className="text-base">{formatPrice(order.total)}</b>
+              <span className="text-gray-500"> · Pedido #{order.number}</span>
+            </p>
+          </div>
+          <a
+            href={whatsappLink(transferMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 block rounded-full bg-green-600 px-6 py-4 text-lg font-bold text-white hover:bg-green-700"
+          >
+            Enviar comprobante por WhatsApp
+          </a>
+        </section>
+      )}
+
       {canPay && !inProcess && isMercadoPagoEnabled() && (
         <PayWithMercadoPago orderId={order.id} label={rejected ? "Intentar de nuevo con Mercado Pago" : "Pagar con Mercado Pago"} />
       )}
 
-      <a
-        href={whatsappLink(orderWhatsappMessage(order))}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block rounded-full bg-green-600 px-6 py-4 text-center text-lg font-bold text-white hover:bg-green-700"
-      >
-        {isMp ? "Avisar por WhatsApp" : "Enviar pedido por WhatsApp"}
-      </a>
+      {!isTransfer && (
+        <a
+          href={whatsappLink(orderWhatsappMessage(order))}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-full bg-green-600 px-6 py-4 text-center text-lg font-bold text-white hover:bg-green-700"
+        >
+          {isMp ? "Avisar por WhatsApp" : "Enviar pedido por WhatsApp"}
+        </a>
+      )}
       {!WHATSAPP_NUMBER && (
         <p className="text-center text-xs text-amber-700">
           Falta configurar NEXT_PUBLIC_WHATSAPP_NUMBER en Vercel para que el pedido llegue a tu número.
@@ -99,7 +140,9 @@ export default async function OrderPage({ params, searchParams }: Props) {
             <span>Total</span>
             <span>{formatPrice(order.total)}</span>
           </div>
-          {isPaymentMethod(order.paymentMethod) && <p className="text-gray-600">Forma de pago: {PAYMENT_METHODS[order.paymentMethod].label}</p>}
+          {isPaymentMethod(order.paymentMethod) && (
+            <p className="text-gray-600">Forma de pago: {PAYMENT_METHODS[order.paymentMethod].label}</p>
+          )}
           {isMp && (
             <p className={paid ? "font-semibold text-green-700" : rejected ? "font-semibold text-red-600" : "text-amber-700"}>
               {paid ? "✅ Pago aprobado" : rejected ? "Pago rechazado" : "Pago pendiente"}
