@@ -26,6 +26,7 @@ function parseForm(formData: FormData) {
   if (!price) throw new UserError("Falta el precio.");
   const regularPrice = int("regularPrice", "Precio normal");
   const costPrice = int("costPrice", "Precio de costo");
+  const shippingCost = int("shippingCost", "Costo de envío");
   const category = str("category");
 
   let sizes: SizeRow[];
@@ -61,6 +62,7 @@ function parseForm(formData: FormData) {
     price,
     regularPrice: regularPrice && regularPrice > price ? regularPrice : null,
     costPrice: costPrice || null,
+    shippingCost: shippingCost || null,
     emoji: str("emoji").slice(0, 8) || "👕",
     featured: formData.get("featured") === "on",
     freeShipping: formData.get("freeShipping") === "on",
@@ -171,4 +173,14 @@ export async function setFreeShipping(id: string, freeShipping: boolean) {
   await requireAdmin();
   await prisma.combo.update({ where: { id }, data: { freeShipping } });
   refresh();
+}
+
+/** Costo de envío desde el listado de artículos */
+export async function setShippingCost(id: string, raw: string): Promise<{ error?: string; value?: number | null }> {
+  await requireAdmin();
+  const value = parsePrice(raw);
+  if (value !== null && (!Number.isFinite(value) || value < 0)) return { error: "Poné un número." };
+  await prisma.combo.update({ where: { id }, data: { shippingCost: value || null } });
+  refresh();
+  return { value: value || null };
 }

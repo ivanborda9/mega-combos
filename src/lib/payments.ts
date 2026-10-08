@@ -14,6 +14,14 @@ export function availableMethods(mpEnabled: boolean): PaymentMethod[] {
   return mpEnabled ? ["TRANSFERENCIA", "MERCADOPAGO"] : ["TRANSFERENCIA", "OTRO"];
 }
 
+/**
+ * Envío del pedido: va todo en un paquete, así que se cobra el envío más alto entre
+ * los artículos que no tienen envío gratis (0 si todos tienen envío gratis).
+ */
+export function shippingFor(items: { freeShipping: boolean; shippingCost: number | null }[]) {
+  return items.reduce((max, i) => (i.freeShipping ? max : Math.max(max, i.shippingCost ?? 0)), 0);
+}
+
 /** "3 x $21.163" — valor de cada cuota */
 export function installmentAmount(price: number, installments: number) {
   return Math.ceil(price / installments);

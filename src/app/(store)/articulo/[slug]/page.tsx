@@ -69,7 +69,11 @@ export default async function ComboPage({ params }: Props) {
               </p>
             )}
           </div>
-          {combo.freeShipping && <p className="w-fit bg-green-700 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white">🚚 Envío gratis</p>}
+          {combo.freeShipping ? (
+            <p className="w-fit bg-green-700 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white">🚚 Envío gratis</p>
+          ) : combo.shippingCost ? (
+            <p className="w-fit bg-gray-100 px-4 py-2 text-sm text-gray-800">🚚 Envío a todo el país: {formatPrice(combo.shippingCost)}</p>
+          ) : null}
           <SizePicker slug={combo.slug} sizes={combo.sizes.map((s) => ({ size: s.size, stock: s.stock }))} />
         </div>
       </div>

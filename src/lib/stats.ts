@@ -13,12 +13,13 @@ export const SALES_PERCENT = 20;
 
 /** Total de todas las ventas (pedidos no cancelados, desde el primero) y el porcentaje fijo sobre ese total. */
 export async function getSalesPercent() {
+  // El envío se le paga al correo: el % se calcula sobre lo vendido en artículos
   const all = await prisma.order.aggregate({
     where: { status: { not: "CANCELADO" } },
-    _sum: { total: true },
+    _sum: { total: true, shippingCost: true },
     _count: true,
   });
-  const revenue = all._sum.total ?? 0;
+  const revenue = (all._sum.total ?? 0) - (all._sum.shippingCost ?? 0);
   return { percent: SALES_PERCENT, revenue, orders: all._count, amount: Math.round((revenue * SALES_PERCENT) / 100) };
 }
 
@@ -89,7 +90,7 @@ export async function getDashboardStats(period: Period) {
     const key = dayKey(order.createdAt);
     byDay.set(key, (byDay.get(key) ?? 0) + order.total);
     const gross = order.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const factor = gross > 0 ? order.total / gross : 1;
+    const factor = gross > 0 ? (order.total - order.shippingCost) / gross : 1;
     for (const item of order.items) {
       totals.units += item.quantity;
       const comboKey = item.comboId ?? item.comboName;

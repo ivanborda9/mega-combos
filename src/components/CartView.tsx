@@ -9,12 +9,28 @@ import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
 import { PROVINCES } from "@/lib/orders";
 import { TRANSFER_ALIAS, TRANSFER_HOLDER } from "@/lib/config";
-import { availableMethods, discountFor, installmentAmount, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
+import {
+  availableMethods,
+  discountFor,
+  installmentAmount,
+  PAYMENT_METHODS,
+  shippingFor,
+  TRANSFER_DISCOUNT_PERCENT,
+  type PaymentMethod,
+} from "@/lib/payments";
 
 const inputClass = "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none";
 
 /** installments: cuotas máximas con Mercado Pago (0 = Mercado Pago no está configurado) */
-export function CartView({ combos, installments = 0, interestFree = true }: { combos: PublicCombo[]; installments?: number; interestFree?: boolean }) {
+export function CartView({
+  combos,
+  installments = 0,
+  interestFree = true,
+}: {
+  combos: PublicCombo[];
+  installments?: number;
+  interestFree?: boolean;
+}) {
   const router = useRouter();
   const { lines, setQuantity, remove, clear } = useCart();
   const [sending, setSending] = useState(false);
@@ -28,7 +44,8 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
   });
   const subtotal = items.reduce((sum, { line, combo }) => sum + combo.price * line.quantity, 0);
   const discount = discountFor(subtotal, paymentMethod);
-  const total = subtotal - discount;
+  const shipping = shippingFor(items.map(({ combo }) => combo));
+  const total = subtotal - discount + shipping;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -132,7 +149,9 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
               </div>
               {line.quantity > stock && (
                 <p className="mt-2 text-sm font-medium text-red-600">
-                  {stock === 0 ? "Este talle se quedó sin stock. Quitalo para continuar." : `Solo quedan ${stock}. Bajá la cantidad para continuar.`}
+                  {stock === 0
+                    ? "Este talle se quedó sin stock. Quitalo para continuar."
+                    : `Solo quedan ${stock}. Bajá la cantidad para continuar.`}
                 </p>
               )}
             </li>
@@ -152,7 +171,14 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
         </label>
         <label className="block text-sm">
           <span className="font-medium">Dirección *</span>
-          <input name="customerAddress" required maxLength={200} autoComplete="street-address" placeholder="Calle, número, piso/depto" className={inputClass} />
+          <input
+            name="customerAddress"
+            required
+            maxLength={200}
+            autoComplete="street-address"
+            placeholder="Calle, número, piso/depto"
+            className={inputClass}
+          />
         </label>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm">
@@ -187,7 +213,8 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
                 {PAYMENT_METHODS[key].label}
                 {key === "MERCADOPAGO" && installments > 1 && (
                   <span className="block text-xs font-semibold text-gray-700">
-                    💳 Hasta {installments} cuotas{interestFree ? " sin interés" : ""}: {installments} x {formatPrice(installmentAmount(subtotal, installments))}
+                    💳 Hasta {installments} cuotas{interestFree ? " sin interés" : ""}: {installments} x{" "}
+                    {formatPrice(installmentAmount(subtotal + shipping, installments))}
                   </span>
                 )}
               </span>
@@ -217,6 +244,18 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
               </div>
             </>
           )}
+          {(discount > 0 || shipping > 0) && discount === 0 && (
+            <div className="flex justify-between text-gray-600">
+              <span>Subtotal</span>
+              <span>{formatPrice(subtotal)}</span>
+            </div>
+          )}
+          <div className="flex justify-between text-gray-600">
+            <span>Envío</span>
+            <span className={shipping === 0 ? "font-semibold text-green-700" : ""}>
+              {shipping === 0 ? "Gratis" : formatPrice(shipping)}
+            </span>
+          </div>
           <div className="flex justify-between text-xl font-extrabold">
             <span>Total</span>
             <span>{formatPrice(total)}</span>

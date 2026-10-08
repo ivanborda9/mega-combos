@@ -25,6 +25,7 @@ export type PublicCombo = {
   emoji: string;
   featured: boolean;
   freeShipping: boolean;
+  shippingCost: number | null;
   sizes: { size: string; stock: number }[];
 };
 
@@ -50,6 +51,7 @@ export function toPublicCombo(c: ComboWithSizes): PublicCombo {
     emoji: c.emoji,
     featured: c.featured,
     freeShipping: c.freeShipping,
+    shippingCost: c.shippingCost,
     sizes: c.sizes.map((s) => ({ size: s.size, stock: s.stock })),
   };
 }

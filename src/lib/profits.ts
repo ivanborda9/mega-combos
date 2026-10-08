@@ -36,7 +36,7 @@ export async function getProfitStats(period: Period) {
     const monthKey = dayKey(order.createdAt).slice(0, 7);
     // Si hubo descuento (ej. transferencia), cada renglón cuenta su parte del total cobrado
     const gross = order.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const factor = gross > 0 ? order.total / gross : 1;
+    const factor = gross > 0 ? (order.total - order.shippingCost) / gross : 1;
     for (const item of order.items) {
       const revenue = Math.round(item.price * item.quantity * factor);
       const unitCost = item.costPrice ?? item.combo?.costPrice ?? null;

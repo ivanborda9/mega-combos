@@ -93,3 +93,10 @@ npm run db:push
 npm run db:seed
 npm run dev
 ```
+
+## Envío
+
+Cada artículo tiene "Envío gratis" (casilla en Admin → Artículos) o un costo
+de envío. El pedido cobra un solo envío: el más alto entre los artículos sin
+envío gratis (va todo en un paquete). El descuento por transferencia se aplica
+solo a los artículos, no al envío, y el envío no cuenta en Ganancias ni en el 20%.

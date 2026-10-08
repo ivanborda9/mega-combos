@@ -14,7 +14,10 @@ export async function POST(req: NextRequest, { params }: { params: { orderId: st
     const { preferenceId, checkoutUrl } = await createOrderPreference({
       orderId: order.id,
       orderNumber: order.number,
-      items: order.items.map((i) => ({ title: `${i.comboName} (talle ${i.size})`, quantity: i.quantity, unit_price: i.price })),
+      items: [
+        ...order.items.map((i) => ({ title: `${i.comboName} (talle ${i.size})`, quantity: i.quantity, unit_price: i.price })),
+        ...(order.shippingCost > 0 ? [{ title: "Envío", quantity: 1, unit_price: order.shippingCost }] : []),
+      ],
       baseUrl: req.nextUrl.origin,
       payerName: order.customerName,
     });

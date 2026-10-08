@@ -124,17 +124,25 @@ export default async function OrderPage({ params, searchParams }: Props) {
           ))}
         </ul>
         <div className="mt-3 space-y-1 border-t pt-3 text-sm">
-          {order.discount > 0 && order.subtotal && (
+          {(order.discount > 0 || order.shippingCost > 0) && order.subtotal && (
             <>
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
                 <span>{formatPrice(order.subtotal)}</span>
               </div>
-              <div className="flex justify-between font-medium text-green-700">
-                <span>Descuento transferencia</span>
-                <span>-{formatPrice(order.discount)}</span>
-              </div>
+              {order.discount > 0 && (
+                <div className="flex justify-between font-medium text-green-700">
+                  <span>Descuento transferencia</span>
+                  <span>-{formatPrice(order.discount)}</span>
+                </div>
+              )}
             </>
+          )}
+          {order.shippingCost > 0 && (
+            <div className="flex justify-between text-gray-600">
+              <span>Envío</span>
+              <span>{formatPrice(order.shippingCost)}</span>
+            </div>
           )}
           <div className="flex justify-between text-lg font-extrabold">
             <span>Total</span>

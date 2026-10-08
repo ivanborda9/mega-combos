@@ -36,7 +36,7 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                 <th className="px-4 py-3 text-right font-medium">Precio</th>
                 <th className="px-4 py-3 text-right font-medium">Ganancia</th>
                 <th className="px-4 py-3 font-medium">Stock</th>
-                <th className="px-4 py-3 font-medium">Envío gratis</th>
+                <th className="px-4 py-3 font-medium">Envío</th>
                 <th className="px-4 py-3 font-medium">Estado</th>
                 <th />
               </tr>
@@ -79,7 +79,7 @@ export default async function CombosAdminPage({ searchParams }: { searchParams: 
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <FreeShippingToggle id={c.id} initial={c.freeShipping} />
+                      <FreeShippingToggle id={c.id} initial={c.freeShipping} cost={c.shippingCost} />
                     </td>
                     <td className="px-4 py-3">
                       <form action={toggleComboActive}>

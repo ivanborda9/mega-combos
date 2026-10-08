@@ -36,7 +36,11 @@ export function ComboCard({ combo, installments }: { combo: PublicCombo; install
           {savings > 0 && <span className="text-xs text-gray-500">-{savings}% OFF</span>}
         </p>
         {savings > 0 && <p className="text-xs text-gray-400 line-through">{formatPrice(combo.regularPrice!)}</p>}
-        {combo.freeShipping && <p className="text-xs font-bold uppercase tracking-wide text-green-700">🚚 Envío gratis</p>}
+        {combo.freeShipping ? (
+          <p className="text-xs font-bold uppercase tracking-wide text-green-700">🚚 Envío gratis</p>
+        ) : combo.shippingCost ? (
+          <p className="text-xs text-gray-600">🚚 Envío: {formatPrice(combo.shippingCost)}</p>
+        ) : null}
         {TRANSFER_DISCOUNT_PERCENT > 0 && (
           <p className="text-xs text-gray-900">
             <span className="text-sm font-bold">{formatPrice(transferPrice(combo.price))}</span> con Transferencia/Depósito

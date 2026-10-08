@@ -27,6 +27,8 @@ model Combo {
   emoji        String      @default("👕")
   featured     Boolean     @default(false)
   freeShipping Boolean     @default(false)
+  /// Costo de envío si no tiene envío gratis (null o 0 = no se cobra)
+  shippingCost Int?
   active       Boolean     @default(true)
   position     Int         @default(0)
   createdAt    DateTime    @default(now())
@@ -98,13 +100,15 @@ model Order {
   subtotal        Int?
   /// Descuento por forma de pago (ej. 10% por transferencia)
   discount        Int         @default(0)
+  /// Envío cobrado (el más alto de los artículos sin envío gratis: va todo en un paquete)
+  shippingCost    Int         @default(0)
   /// TRANSFERENCIA | MERCADOPAGO | OTRO ("" en pedidos viejos)
   paymentMethod   String      @default("")
   /// Pago con Mercado Pago: PENDIENTE | APROBADO | RECHAZADO ("" si no se paga por Mercado Pago)
   paymentStatus   String      @default("")
   mpPreferenceId  String?
   mpPaymentId     String?
-  /// Lo que paga el cliente: subtotal - descuento
+  /// Lo que paga el cliente: subtotal - descuento + envío
   total           Int
   /// PENDIENTE | CONFIRMADO | DESPACHADO | ENTREGADO | CANCELADO
   status          String      @default("PENDIENTE")

@@ -60,6 +60,10 @@ export function ComboForm({ action, combo }: Props) {
 
         <Card title="Precio">
           <PriceFields price={combo?.price} regularPrice={combo?.regularPrice} costPrice={combo?.costPrice} />
+          <label className="mt-4 block max-w-xs text-sm font-medium">
+            Costo de envío <span className="font-normal text-gray-500">($, si no tiene envío gratis)</span>
+            <input name="shippingCost" inputMode="numeric" defaultValue={combo?.shippingCost ?? ""} placeholder="Ej. 6500" className={inputClass} />
+          </label>
         </Card>
 
         <Card title="Talles y stock">

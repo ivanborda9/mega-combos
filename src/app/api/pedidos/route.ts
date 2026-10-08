@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { discountFor, isPaymentMethod } from "@/lib/payments";
+import { discountFor, isPaymentMethod, shippingFor } from "@/lib/payments";
 import { createOrderPreference, isMercadoPagoEnabled } from "@/lib/mercadopago";
 import { PROVINCES } from "@/lib/orders";
 
 type Line = { slug: string; size: string; quantity: number };
 
 class OrderError extends Error {}
+
+/** Renglones para Mercado Pago: los artículos y, si corresponde, el envío */
+function mpItems(order: { shippingCost: number; items: { comboName: string; size: string; quantity: number; price: number }[] }) {
+  return [
+    ...order.items.map((i) => ({ title: `${i.comboName} (talle ${i.size})`, quantity: i.quantity, unit_price: i.price })),
+    ...(order.shippingCost > 0 ? [{ title: "Envío", quantity: 1, unit_price: order.shippingCost }] : []),
+  ];
+}
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
@@ -52,6 +60,7 @@ export async function POST(req: Request) {
   try {
     const order = await prisma.$transaction(async (tx) => {
       const items = [];
+      const shippingRules: { freeShipping: boolean; shippingCost: number | null }[] = [];
       for (const line of lines) {
         const combo = await tx.combo.findUnique({
           where: { slug: line.slug },
@@ -69,6 +78,7 @@ export async function POST(req: Request) {
         if (updated.count === 0) {
           throw new OrderError(`No hay stock suficiente de ${combo.name} (talle ${line.size}). Quedan ${size.stock}.`);
         }
+        shippingRules.push({ freeShipping: combo.freeShipping, shippingCost: combo.shippingCost });
         items.push({
           comboId: combo.id,
           comboName: combo.name,
@@ -81,6 +91,7 @@ export async function POST(req: Request) {
 
       const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
       const discount = discountFor(subtotal, paymentMethod);
+      const shippingCost = shippingFor(shippingRules);
       return tx.order.create({
         data: {
           customerName,
@@ -93,7 +104,8 @@ export async function POST(req: Request) {
           paymentStatus: paymentMethod === "MERCADOPAGO" ? "PENDIENTE" : "",
           subtotal,
           discount,
-          total: subtotal - discount,
+          shippingCost,
+          total: subtotal - discount + shippingCost,
           items: { create: items },
         },
         include: { items: true },
@@ -105,7 +117,7 @@ export async function POST(req: Request) {
         const { preferenceId, checkoutUrl } = await createOrderPreference({
           orderId: order.id,
           orderNumber: order.number,
-          items: order.items.map((i) => ({ title: `${i.comboName} (talle ${i.size})`, quantity: i.quantity, unit_price: i.price })),
+          items: mpItems(order),
           baseUrl: new URL(req.url).origin,
           payerName: order.customerName,
         });
