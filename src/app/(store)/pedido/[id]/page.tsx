@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { orderWhatsappMessage, SHIPPING_NOTE } from "@/lib/orders";
 import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
-import { PICKUP_ADDRESS, PICKUP_HOURS, TRANSFER_ALIAS, TRANSFER_HOLDER, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappLink } from "@/lib/config";
+import { PICKUP_ADDRESS, PICKUP_HOURS, TRANSFER_ALIAS, TRANSFER_HOLDER, WHATSAPP_DISPLAY, whatsappLink } from "@/lib/config";
 import { CopyButton } from "@/components/CopyButton";
 import { isMercadoPagoEnabled } from "@/lib/mercadopago";
 import { syncOrderPayment } from "@/lib/mpSync";
@@ -103,11 +103,6 @@ export default async function OrderPage({ params, searchParams }: Props) {
         >
           {isMp ? "Avisar por WhatsApp" : "Enviar pedido por WhatsApp"}
         </a>
-      )}
-      {!WHATSAPP_NUMBER && (
-        <p className="text-center text-xs text-amber-700">
-          Falta configurar NEXT_PUBLIC_WHATSAPP_NUMBER en Vercel para que el pedido llegue a tu número.
-        </p>
       )}
 
       {order.deliveryMethod !== "RETIRO" && order.status !== "CANCELADO" && (

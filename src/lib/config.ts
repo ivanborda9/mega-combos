@@ -2,8 +2,10 @@ export const STORE_NAME = process.env.NEXT_PUBLIC_STORE_NAME || "REINAS XL";
 
 /** Texto de la franja rosa de avisos que corre arriba de la tienda */
 export const ANNOUNCEMENT = process.env.NEXT_PUBLIC_ANNOUNCEMENT || "🔥 3 CUOTAS SIN INTERÉS 🔥 + ENTREGA RÁPIDA A TODO EL PAÍS";
-// WhatsApp 2281 583030 (Argentina, celular): 54 + 9 + número sin el 15
-export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5492281583030").replace(/\D/g, "");
+// WhatsApp de la tienda: 2281 583030 (Argentina, celular → 54 + 9 + número).
+// Fijo a propósito: la variable vieja NEXT_PUBLIC_WHATSAPP_NUMBER de Vercel tenía un número
+// personal y ya no se usa. Todos los links de WhatsApp de la página salen de acá.
+export const WHATSAPP_NUMBER = "5492281583030";
 export const WHATSAPP_DISPLAY = "2281 583030";
 export const CONTACT_EMAIL = "reinasXL.oficial@gmail.com";
 
