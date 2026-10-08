@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getDashboardStats, getSalesPercent, parsePeriod, PERIODS } from "@/lib/stats";
+import { getDashboardStats, parsePeriod, PERIODS } from "@/lib/stats";
+import { getProfitShare } from "@/lib/profits";
 import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
 import { STATUS_LABELS, ORDER_STATUSES } from "@/lib/orders";
@@ -8,7 +9,7 @@ import { DailySalesChart, RankBars } from "@/components/admin/DailySalesChart";
 
 export default async function AdminDashboard({ searchParams }: { searchParams: { periodo?: string } }) {
   const period = parsePeriod(searchParams.periodo);
-  const [stats, share] = await Promise.all([getDashboardStats(period), getSalesPercent()]);
+  const [stats, share] = await Promise.all([getDashboardStats(period), getProfitShare()]);
 
   return (
     <div className="space-y-6">
@@ -31,7 +32,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: {
           tone="red"
           label={`Porcentaje ${share.percent}%`}
           value={formatPrice(share.amount)}
-          hint={`${share.percent}% de ${formatPrice(share.revenue)} (todas las ventas)`}
+          hint={`${share.percent}% de ${formatPrice(share.profit)} de ganancia (todas las ventas)${share.revenueWithoutCost > 0 ? " · hay artículos sin costo cargado" : ""}`}
         />
         <Stat label="Ventas de hoy" value={formatPrice(stats.todayTotals.revenue)} hint={`${stats.todayTotals.orders} pedidos`} />
         <Stat label="Ventas del mes" value={formatPrice(stats.monthTotals.revenue)} hint={`${stats.monthTotals.orders} pedidos`} />

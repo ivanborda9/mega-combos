@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
-import { getProfitStats, marginOf } from "@/lib/profits";
-import { parsePeriod, PERIODS, SALES_PERCENT } from "@/lib/stats";
+import { getProfitStats, marginOf, PROFIT_SHARE_PERCENT } from "@/lib/profits";
+import { parsePeriod, PERIODS } from "@/lib/stats";
 import { Card, PageHeader, Stat } from "@/components/admin/ui";
 
 const pct = (n: number) => `${n.toLocaleString("es-AR")}%`;
@@ -61,11 +61,11 @@ export default async function ProfitsPage({ searchParams }: { searchParams: { pe
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Ticket promedio" value={formatPrice(s.averageTicket)} hint="Venta promedio por pedido" />
         <Stat label="Ganancia por pedido" value={formatPrice(s.averageProfit)} hint="Promedio" />
-        <Stat tone="red" label={`Porcentaje ${SALES_PERCENT}%`} value={formatPrice(s.share)} hint={`${SALES_PERCENT}% de las ventas del período`} />
+        <Stat tone="red" label={`Porcentaje ${PROFIT_SHARE_PERCENT}%`} value={formatPrice(s.share)} hint={`${PROFIT_SHARE_PERCENT}% de la ganancia del período`} />
         <Stat
-          label={`Ganancia después del ${SALES_PERCENT}%`}
+          label={`Ganancia después del ${PROFIT_SHARE_PERCENT}%`}
           value={formatPrice(s.profitAfterShare)}
-          hint={`Ganancia menos el ${SALES_PERCENT}% de las ventas`}
+          hint={`Ganancia menos el ${PROFIT_SHARE_PERCENT}% de la ganancia`}
         />
       </div>
 

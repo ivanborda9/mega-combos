@@ -30,7 +30,7 @@ entrega.
   búsqueda; detalle con los datos del cliente y cambio de estado (Pendiente,
   Confirmado, Despachado, Entregado, Cancelado). Cancelar devuelve el stock
 - **Ganancias**: ventas, costo de lo vendido, ganancia, margen, ticket
-  promedio, el 20% y la ganancia después del 20%, por artículo, por mes y por
+  promedio, el 25% de la ganancia y la ganancia después de ese 25%, por artículo, por mes y por
   categoría, para 7, 30, 90 días o todo
 - **Artículos**: crear, editar, ocultar o eliminar artículos; varias fotos (se suben
   desde la galería del celular o la compu), precio de costo (privado) con la
@@ -99,4 +99,4 @@ npm run dev
 Cada artículo tiene "Envío gratis" (casilla en Admin → Artículos) o un costo
 de envío. El pedido cobra un solo envío: el más alto entre los artículos sin
 envío gratis (va todo en un paquete). El descuento por transferencia se aplica
-solo a los artículos, no al envío, y el envío no cuenta en Ganancias ni en el 20%.
+solo a los artículos, no al envío, y el envío no cuenta en Ganancias ni en el 25%.

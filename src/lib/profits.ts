@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { dayKey, SALES_PERCENT, type Period } from "@/lib/stats";
+import { dayKey, type Period } from "@/lib/stats";
+
+/** Porcentaje fijo sobre la ganancia. Se cambia solo acá, en el código: no hay forma de editarlo desde el admin. */
+export const PROFIT_SHARE_PERCENT = 25;
+
+const shareOf = (profit: number) => Math.round((Math.max(0, profit) * PROFIT_SHARE_PERCENT) / 100);
 
 type Row = { label: string; units: number; revenue: number; cost: number; profit: number; revenueWithoutCost: number };
 
@@ -61,7 +66,7 @@ export async function getProfitStats(period: Period) {
     }
   }
 
-  const share = Math.round((total.revenue * SALES_PERCENT) / 100);
+  const share = shareOf(total.profit);
   const revenueWithCost = total.revenue - total.revenueWithoutCost;
 
   return {
@@ -79,4 +84,10 @@ export async function getProfitStats(period: Period) {
       .sort(([a], [b]) => b.localeCompare(a))
       .map(([key, row]) => ({ ...row, label: `${MONTHS[Number(key.slice(5, 7)) - 1]} ${key.slice(0, 4)}` })),
   };
+}
+
+/** El % fijo sobre la ganancia de todas las ventas (desde el primer pedido, sin cancelados): tarjeta roja del Resumen */
+export async function getProfitShare() {
+  const { total } = await getProfitStats("todo");
+  return { percent: PROFIT_SHARE_PERCENT, profit: total.profit, amount: shareOf(total.profit), revenueWithoutCost: total.revenueWithoutCost };
 }
