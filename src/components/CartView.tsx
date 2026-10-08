@@ -8,7 +8,7 @@ import { ComboVisual } from "@/components/ComboVisual";
 import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
 import { PROVINCES } from "@/lib/orders";
-import { availableMethods, discountFor, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
+import { availableMethods, discountFor, installmentAmount, PAYMENT_METHODS, TRANSFER_DISCOUNT_PERCENT, type PaymentMethod } from "@/lib/payments";
 
 const inputClass = "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none";
 
@@ -185,8 +185,8 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
               <span className="flex-1">
                 {PAYMENT_METHODS[key].label}
                 {key === "MERCADOPAGO" && installments > 1 && (
-                  <span className="block text-xs text-gray-500">
-                    Hasta {installments} cuotas{interestFree ? " sin interés" : ""}
+                  <span className="block text-xs font-semibold text-gray-700">
+                    💳 Hasta {installments} cuotas{interestFree ? " sin interés" : ""}: {installments} x {formatPrice(installmentAmount(subtotal, installments))}
                   </span>
                 )}
               </span>
@@ -218,7 +218,9 @@ export function CartView({ combos, installments = 0, interestFree = true }: { co
         <button
           type="submit"
           disabled={sending || items.some(({ line, stock }) => line.quantity > stock)}
-          className="block w-full rounded-full bg-green-600 px-6 py-3 text-center font-bold text-white hover:bg-green-700 disabled:opacity-50"
+          className={`block w-full rounded-full px-6 py-3 text-center font-bold text-white disabled:opacity-50 ${
+            paymentMethod === "MERCADOPAGO" ? "bg-[#009ee3] hover:bg-[#0089c7]" : "bg-green-600 hover:bg-green-700"
+          }`}
         >
           {sending ? "Registrando pedido…" : paymentMethod === "MERCADOPAGO" ? "Confirmar y pagar con Mercado Pago" : "Confirmar pedido"}
         </button>
