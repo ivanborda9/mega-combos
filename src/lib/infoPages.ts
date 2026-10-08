@@ -41,7 +41,7 @@ export const INFO_PAGES: InfoPage[] = [
       },
       {
         title: "Envíos",
-        body: "Realizamos envíos a todo el país a través de Andreani. El costo se informa al coordinar el pedido y puede variar según la ubicación. Los tiempos de entrega son estimativos y pueden verse afectados por la empresa de correo.",
+        body: "Realizamos envíos a todo el país a través de Andreani, a la sucursal o punto HOP de la ciudad del cliente. El costo se muestra al momento de la compra. También se puede elegir retiro en local. Los tiempos de entrega son estimativos y pueden verse afectados por la empresa de correo.",
       },
       {
         title: "Cambios",
@@ -73,10 +73,13 @@ export const INFO_PAGES: InfoPage[] = [
     subtitle: "Política de Envío – REINAS XL",
     intro: "En REINAS XL trabajamos para que recibas tu compra de forma segura y en el menor tiempo posible.",
     sections: [
-      { title: "📦 Cobertura de envíos", body: "Realizamos envíos a todo el territorio de la República Argentina a través de Andreani." },
+      {
+        title: "📦 Cobertura de envíos",
+        body: "Realizamos envíos a todo el territorio de la República Argentina a través de Andreani. Tu pedido se envía a la sucursal de Andreani o al punto HOP de tu ciudad, donde lo retirás.",
+      },
       {
         title: "🚚 Tiempo de entrega",
-        body: "Los tiempos de entrega varían según la localidad de destino. Una vez despachado el pedido, te enviamos el número de seguimiento para que puedas rastrear tu paquete en todo momento.",
+        body: "Los tiempos de entrega varían según la localidad de destino. Una vez despachado el pedido, te enviamos por WhatsApp el número de seguimiento para que puedas rastrear tu paquete y saber cuándo está disponible para retirar.",
       },
       {
         title: "⏳ Procesamiento de pedidos",
@@ -84,17 +87,21 @@ export const INFO_PAGES: InfoPage[] = [
       },
       {
         title: "💸 Costo de envío",
-        body: "El costo de envío se informa al coordinar tu pedido por WhatsApp y se paga junto con el pedido. En algunos casos, podrás retirar en la sucursal Andreani más cercana si lo preferís.",
+        body: "El costo de envío se muestra en el carrito antes de confirmar la compra y se paga junto con el pedido. Algunos artículos tienen envío gratis.",
       },
       {
         title: "📍 Datos de envío",
-        body: "Te pedimos que revises cuidadosamente tus datos personales y la dirección de entrega antes de finalizar la compra. REINAS XL no se responsabiliza por direcciones incorrectas o incompletas.",
+        body: "Te pedimos que revises cuidadosamente tus datos personales, tu localidad y tu teléfono antes de finalizar la compra, para que el envío llegue a la sucursal o punto HOP correcto. REINAS XL no se responsabiliza por datos incorrectos o incompletos.",
       },
       {
-        title: "📦 Recepción del pedido",
-        body: "Es importante que haya alguien disponible para recibir el pedido en el domicilio indicado. En caso de no encontrarte, Andreani realizará hasta 2 visitas y, si no logra entregarlo, el paquete volverá a nuestro depósito.",
+        title: "📦 Retiro del pedido",
+        body: "Cuando tu pedido llegue a la sucursal de Andreani o al punto HOP, lo retirás presentando tu DNI y el número de seguimiento. Es importante retirarlo dentro del plazo que indique Andreani: si no se retira a tiempo, el paquete vuelve a nuestro depósito.",
       },
-      { title: "🔄 Cambios de pedidos en tránsito", body: "Una vez que el pedido fue despachado, no es posible modificar la dirección de entrega." },
+      { title: "🔄 Cambios de pedidos en tránsito", body: "Una vez que el pedido fue despachado, no es posible modificar la sucursal o el punto de destino." },
+      {
+        title: "🏬 Retiro en local",
+        body: "También podés elegir retiro en local al hacer tu compra, sin costo de envío. Tu pedido estará listo para retirar en las próximas 24 horas y te avisamos por WhatsApp.",
+      },
       {
         title: "❗ Demoras o inconvenientes",
         body: "No nos responsabilizamos por demoras imputables a Andreani o por causas de fuerza mayor. Ante cualquier inconveniente con tu envío, podés contactarnos y haremos todo lo posible para ayudarte.",
@@ -114,7 +121,7 @@ export const INFO_PAGES: InfoPage[] = [
       },
       {
         title: "📦 ¿Hacen envíos a todo el país?",
-        body: "Sí, realizamos envíos a toda Argentina a través de Andreani. También podés elegir retiro en sucursal si lo preferís (según disponibilidad).",
+        body: "Sí, realizamos envíos a toda Argentina a través de Andreani, a la sucursal o punto HOP de tu ciudad. También podés elegir retiro en local sin costo.",
       },
       {
         title: "⏳ ¿Cuánto tarda en llegar mi pedido?",
@@ -122,7 +129,7 @@ export const INFO_PAGES: InfoPage[] = [
       },
       {
         title: "💸 ¿Cuánto cuesta el envío?",
-        body: "El costo de envío depende de tu ubicación y te lo informamos al coordinar el pedido por WhatsApp.",
+        body: "El costo de envío se muestra en el carrito antes de confirmar la compra. Algunos artículos tienen envío gratis, y el retiro en local no tiene costo.",
       },
       {
         title: "🪪 ¿Cómo sé si mi pedido fue confirmado?",
@@ -138,7 +145,7 @@ export const INFO_PAGES: InfoPage[] = [
       },
       {
         title: "📍 ¿Cómo puedo seguir mi pedido?",
-        body: "Te enviamos por WhatsApp tu número de seguimiento cuando el pedido es despachado. Podés rastrearlo desde la web de Andreani.",
+        body: "Te enviamos por WhatsApp tu número de seguimiento cuando el pedido es despachado. Podés rastrearlo desde la web de Andreani y, cuando llegue, retirarlo en la sucursal o punto HOP con tu DNI.",
       },
     ],
     contact: "📞 ¿Cómo me contacto con ustedes?",
