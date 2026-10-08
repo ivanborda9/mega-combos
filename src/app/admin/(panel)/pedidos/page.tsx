@@ -6,11 +6,13 @@ import { getAdminRole } from "@/lib/adminSession";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { PaymentBadge } from "@/components/admin/PaymentBadge";
-import { markDispatched } from "./actions";
+import { deleteAllOrders, markDispatched } from "./actions";
+import { ConfirmButton } from "@/components/admin/ConfirmButton";
+import { Notice } from "@/components/admin/ui";
 
 const PAGE_SIZE = 50;
 
-export default async function OrdersPage({ searchParams }: { searchParams: { estado?: string; q?: string; pagina?: string } }) {
+export default async function OrdersPage({ searchParams }: { searchParams: { estado?: string; q?: string; pagina?: string; reset?: string } }) {
   const isOwner = (await getAdminRole()) === "owner";
   // "despachar" = pendientes + confirmados; el empleado entra directo ahí
   const estado = searchParams.estado ?? (isOwner ? undefined : "despachar");
@@ -54,6 +56,10 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
   return (
     <div>
       <PageHeader title="Pedidos" />
+      {searchParams.reset === "confirmar" && <Notice kind="error">No se borró nada: tenés que escribir BORRAR para confirmar.</Notice>}
+      {searchParams.reset && /^\d+$/.test(searchParams.reset) && (
+        <Notice kind="ok">Listo: se borraron {searchParams.reset} pedidos. El próximo pedido va a ser el #1.</Notice>
+      )}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {[
           { value: "despachar", label: "📦 Para despachar" },
@@ -147,6 +153,31 @@ export default async function OrdersPage({ searchParams }: { searchParams: { est
           </span>
           {page * PAGE_SIZE < count ? <Link href={link({ pagina: String(page + 1) })}>Siguientes →</Link> : <span />}
         </div>
+      )}
+      {isOwner && (
+        <details className="mt-10 max-w-xl rounded-2xl border border-red-200 bg-white p-5">
+          <summary className="cursor-pointer font-semibold text-red-700">Borrar todos los pedidos (por ejemplo, los de prueba)</summary>
+          <form action={deleteAllOrders} className="mt-4 space-y-3 text-sm">
+            <p className="text-gray-700">
+              Se borran <b>todos</b> los pedidos y sus datos, y no se puede deshacer. Las ventas, ganancias y el 20% vuelven a cero, y el
+              próximo pedido va a ser el #1.
+            </p>
+            <label className="flex items-start gap-2">
+              <input type="checkbox" name="restoreStock" defaultChecked className="mt-0.5" />
+              <span>Devolver al stock lo que descontaron estos pedidos (dejalo tildado si fueron de prueba)</span>
+            </label>
+            <label className="block font-medium">
+              Para confirmar, escribí <b>BORRAR</b>
+              <input name="confirm" autoComplete="off" className="mt-1 w-40 rounded-lg border border-gray-300 px-3 py-2 uppercase" />
+            </label>
+            <ConfirmButton
+              message="¿Seguro? Se borran TODOS los pedidos y no se puede deshacer."
+              className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+            >
+              Borrar todos los pedidos
+            </ConfirmButton>
+          </form>
+        </details>
       )}
     </div>
   );

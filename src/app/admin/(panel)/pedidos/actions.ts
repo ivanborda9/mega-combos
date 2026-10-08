@@ -73,3 +73,38 @@ export async function undoDispatched(formData: FormData) {
   });
   revalidatePath("/admin", "layout");
 }
+
+/**
+ * Borra TODOS los pedidos (para empezar de cero después de las pruebas). Solo el dueño, y hay
+ * que escribir BORRAR. Si se pide, devuelve al stock lo que descontaban los pedidos no cancelados
+ * (los cancelados ya lo habían devuelto). Después reinicia la numeración para que el próximo sea el #1.
+ */
+export async function deleteAllOrders(formData: FormData) {
+  await requireAdmin();
+  if (String(formData.get("confirm") ?? "").trim().toUpperCase() !== "BORRAR") {
+    redirect("/admin/pedidos?reset=confirmar");
+  }
+  const restoreStock = formData.get("restoreStock") === "on";
+
+  const deleted = await prisma.$transaction(async (tx) => {
+    if (restoreStock) {
+      const items = await tx.orderItem.findMany({
+        where: { comboId: { not: null }, order: { status: { not: "CANCELADO" } } },
+        select: { comboId: true, size: true, quantity: true },
+      });
+      for (const item of items) {
+        await tx.comboSize.updateMany({
+          where: { comboId: item.comboId!, size: item.size },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+    }
+    const { count } = await tx.order.deleteMany({}); // los renglones se borran en cascada
+    // Numeración desde 1 (la secuencia que Prisma crea para el autoincrement de "number")
+    await tx.$executeRawUnsafe(`SELECT setval(pg_get_serial_sequence('"Order"', 'number'), 1, false)`);
+    return count;
+  });
+
+  revalidatePath("/", "layout");
+  redirect(`/admin/pedidos?reset=${deleted}`);
+}
