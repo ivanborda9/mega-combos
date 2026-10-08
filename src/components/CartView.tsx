@@ -7,7 +7,7 @@ import { useCart } from "@/components/CartProvider";
 import { ComboVisual } from "@/components/ComboVisual";
 import { ONE_SIZE, type PublicCombo } from "@/lib/combos";
 import { formatPrice } from "@/lib/format";
-import { DELIVERY_METHODS, PROVINCES, type DeliveryMethod } from "@/lib/orders";
+import { DELIVERY_METHODS, PROVINCES, SHIPPING_NOTE, type DeliveryMethod } from "@/lib/orders";
 import { PICKUP_ADDRESS, PICKUP_HOURS, TRANSFER_ALIAS, TRANSFER_HOLDER } from "@/lib/config";
 import {
   availableMethods,
@@ -202,7 +202,7 @@ export function CartView({
                 {DELIVERY_METHODS[key]}
                 <span className="block text-xs text-gray-500">
                   {key === "ENVIO"
-                    ? "Por Andreani a todo el país"
+                    ? "Retirás en la sucursal Andreani o punto HOP de tu ciudad"
                     : PICKUP_ADDRESS
                       ? PICKUP_ADDRESS
                       : "Te pasamos la dirección por WhatsApp"}
@@ -211,6 +211,11 @@ export function CartView({
               {key === "RETIRO" && <span className="text-xs font-semibold text-green-700">Sin costo</span>}
             </label>
           ))}
+          {!pickup && (
+            <p className="bg-blush-100 px-3 py-2 text-xs text-gray-800">
+              📦 {SHIPPING_NOTE} Te avisamos por WhatsApp con el número de seguimiento.
+            </p>
+          )}
           {pickup && (
             <p className="bg-green-50 px-3 py-2 text-xs font-semibold text-green-800">
               ⏱️ Tu pedido estará listo para retirar en las próximas 24 horas

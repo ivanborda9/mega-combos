@@ -29,7 +29,10 @@ export const PROVINCES = [
   "Tucumán",
 ];
 
-export const DELIVERY_METHODS = { ENVIO: "Envío a domicilio", RETIRO: "Retiro en local" } as const;
+export const DELIVERY_METHODS = { ENVIO: "Envío a sucursal o punto HOP", RETIRO: "Retiro en local" } as const;
+
+/** Aclaración del envío: no es a domicilio, se retira en Andreani o en un punto HOP */
+export const SHIPPING_NOTE = "Tu pedido se envía a la sucursal de Andreani o al punto HOP de tu ciudad.";
 export type DeliveryMethod = keyof typeof DELIVERY_METHODS;
 export const isDeliveryMethod = (v: unknown): v is DeliveryMethod => typeof v === "string" && v in DELIVERY_METHODS;
 
@@ -108,7 +111,9 @@ export function orderWhatsappMessage(order: MessageOrder) {
     ...(order.paymentMethod === "MERCADOPAGO" && order.paymentStatus === "APROBADO" ? ["✅ Pago aprobado en Mercado Pago"] : []),
     `Nombre: ${order.customerName}`,
     ...(order.customerPhone ? [`Teléfono: ${order.customerPhone}`] : []),
-    ...(order.deliveryMethod === "RETIRO" ? ["Entrega: 🏬 Retiro en local (listo en las próximas 24 horas)"] : []),
+    order.deliveryMethod === "RETIRO"
+      ? "Entrega: 🏬 Retiro en local (listo en las próximas 24 horas)"
+      : "Entrega: 🚚 Envío a sucursal Andreani o punto HOP de mi ciudad",
     ...(order.customerAddress ? [`Dirección: ${order.customerAddress}`] : []),
     ...(order.customerCity ? [`Localidad: ${order.customerCity}`] : []),
     ...(order.customerProvince ? [`Provincia: ${order.customerProvince}`] : []),

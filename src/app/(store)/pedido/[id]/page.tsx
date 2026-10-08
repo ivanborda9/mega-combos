@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
 import { ONE_SIZE } from "@/lib/combos";
-import { orderWhatsappMessage } from "@/lib/orders";
+import { orderWhatsappMessage, SHIPPING_NOTE } from "@/lib/orders";
 import { isPaymentMethod, PAYMENT_METHODS } from "@/lib/payments";
 import { PICKUP_ADDRESS, PICKUP_HOURS, TRANSFER_ALIAS, TRANSFER_HOLDER, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappLink } from "@/lib/config";
 import { CopyButton } from "@/components/CopyButton";
@@ -108,6 +108,16 @@ export default async function OrderPage({ params, searchParams }: Props) {
         <p className="text-center text-xs text-amber-700">
           Falta configurar NEXT_PUBLIC_WHATSAPP_NUMBER en Vercel para que el pedido llegue a tu número.
         </p>
+      )}
+
+      {order.deliveryMethod !== "RETIRO" && order.status !== "CANCELADO" && (
+        <section className="rounded-2xl bg-white p-5 text-sm ring-1 ring-black/10">
+          <h2 className="font-bold">🚚 Envío a sucursal o punto HOP</h2>
+          <p className="mt-2 bg-blush-200 px-4 py-3 text-center text-base font-bold text-gray-900">{SHIPPING_NOTE}</p>
+          <p className="mt-2 text-gray-700">
+            Cuando lo despachemos te mandamos por WhatsApp el número de seguimiento para que sepas cuándo y dónde retirarlo.
+          </p>
+        </section>
       )}
 
       {order.deliveryMethod === "RETIRO" && order.status !== "CANCELADO" && (

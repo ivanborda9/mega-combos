@@ -101,7 +101,7 @@ export default async function OrderDetailPage({ params, searchParams }: { params
               )}
               <div>
                 <dt className="text-gray-500">Entrega</dt>
-                <dd className="font-medium">{order.deliveryMethod === "RETIRO" ? "🏬 Retiro en local" : "🚚 Envío a domicilio"}</dd>
+                <dd className="font-medium">{order.deliveryMethod === "RETIRO" ? "🏬 Retiro en local" : "🚚 Envío a sucursal o punto HOP"}</dd>
               </div>
               {order.customerAddress && (
                 <div>
