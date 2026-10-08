@@ -72,7 +72,7 @@ export function PromoCountdown() {
     <div
       role="dialog"
       aria-label={PROMO_TITLE}
-      className="fixed inset-x-3 bottom-24 z-40 bg-white p-5 shadow-2xl ring-1 ring-black/10 sm:inset-x-auto sm:bottom-6 sm:right-24 sm:w-[420px]"
+      className="fixed inset-x-3 bottom-4 z-40 bg-white p-5 shadow-2xl ring-1 ring-black/10 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[420px]"
     >
       <button type="button" onClick={hide} aria-label="Cerrar" className="absolute right-3 top-2 text-xl leading-none text-gray-400 hover:text-gray-900">
         ×

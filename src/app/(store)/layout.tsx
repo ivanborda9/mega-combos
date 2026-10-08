@@ -2,7 +2,6 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { CartProvider } from "@/components/CartProvider";
 import { Navbar } from "@/components/Navbar";
-import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { PromoCountdown } from "@/components/PromoCountdown";
 import { CONTACT_EMAIL, STORE_NAME, WHATSAPP_DISPLAY, whatsappLink } from "@/lib/config";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth";
@@ -48,7 +47,6 @@ export default async function StoreLayout({ children }: { children: React.ReactN
             © {new Date().getFullYear()} {STORE_NAME}
           </p>
         </footer>
-        <WhatsAppFloat />
         <PromoCountdown />
       </div>
     </CartProvider>
